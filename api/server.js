@@ -17,34 +17,67 @@ mongoose
 
 const Post = require("./models/Post");
 
+// Get all posts
 app.get("/feed", async (req, res) => {
-  const todos = await Post.find();
-  res.json(todos);
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.post("/todo/new", (req, res) => {
-  const todo = new Todo({
-    text: req.body.text,
+// Create a new post
+app.post("/feed/new", async (req, res) => {
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content,
   });
 
-  todo.save();
-
-  res.json(todo);
+  try {
+    const newPost = await post.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
-app.delete("/todo/delete/:id", async (req, res) => {
-  const result = await Todo.findByIdAndDelete(req.params.id); //"id" is the name from the route "/todo/delete/:id"
-  res.json(result);
+// Edit a post
+app.put("/feed/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (post == null) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (req.body.title != null) {
+      post.title = req.body.title;
+    }
+
+    if (req.body.content != null) {
+      post.content = req.body.content;
+    }
+
+    const updatedPost = await post.save();
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
-app.get("/todo/complete/:id", async (req, res) => {
-  const todo = await Todo.findById(req.params.id);
+// Delete a post
+app.delete("/feed/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (post == null) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-  todo.complete = !todo.complete;
-
-  todo.save();
-
-  res.json(todo);
+    await post.remove();
+    res.json({ message: "Post deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 app.listen(3001, () => console.log("=== Server running on port 3001."));
