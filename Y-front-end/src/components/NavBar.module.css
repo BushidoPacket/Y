@@ -1,0 +1,24 @@
+.navmain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    width: 400px;
+    background: rgb(13,22,71);
+    background: radial-gradient(circle, rgba(13,22,71,1) 0%, rgba(40,6,51,1) 50%, rgba(92,14,14,1) 100%);
+    border-radius: 5rem;
+}
+
+.navmain a, .navmain a:visited {
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+    margin: 1rem;
+
+    transition: 0.5s;
+}
+
+.navmain a:hover {
+    transform: scale(1.5) rotate(-5deg);
+    color: rgb(125, 196, 255);
+}
