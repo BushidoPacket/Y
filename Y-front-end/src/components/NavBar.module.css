@@ -16,6 +16,7 @@
     margin: 1rem;
 
     transition: 0.5s;
+    user-select: none;
 }
 
 .navmain a:hover {
