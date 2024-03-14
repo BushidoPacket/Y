@@ -2,14 +2,19 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
-    commenter: {
+    author: {
         type: String,
         required: true
     },
     
     text: {
         type: String,
-        required: true,
+        required: true
+    },
+
+    postParentID: {
+        type: String,
+        required: true
     },
     
     timestamp: {

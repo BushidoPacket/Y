@@ -1,13 +1,28 @@
-GET http://localhost:3001/todos
+GET http://localhost:3001/posts
 
 
 ###
 
-POST http://localhost:3001/todo/new
+GET http://localhost:3001/comments?postParentID=65f34ff57b35401cef25749c
+
+
+###
+
+POST http://localhost:3001/posts
 Content-Type: application/json
 
-{
+{   "author": "Naděžda",
     "text": "Order pizza"
+}
+
+###
+
+POST http://localhost:3001/comments
+Content-Type: application/json
+
+{   "author": "Lenka",
+    "text": "Order burgir",
+    "postParentID": "65f34ff57b35401cef25749c"
 }
 
 ###

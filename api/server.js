@@ -16,68 +16,92 @@ mongoose
   .catch(console.error);
 
 const Post = require("./models/Post");
+const Comment = require("./models/Comment");
 
-// Get all posts
-app.get("/feed", async (req, res) => {
+
+//Publish a new post into DB
+app.post("/posts", async (req, res) => {
   try {
-    const posts = await Post.find();
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+    const { author, text } = req.body;
 
-// Create a new post
-app.post("/feed/new", async (req, res) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-  });
+    const newPost = new Post({
+      author,
+      text,
+    });
 
-  try {
-    const newPost = await post.save();
+    await newPost.save();
+
     res.status(201).json(newPost);
+    console.log("=== New post created.");
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "There has been an error while posting a content. Please try again later." });
   }
 });
 
-// Edit a post
-app.put("/feed/:id", async (req, res) => {
+//Fetch all posts from DB with arguments
+app.get("/posts", async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skipAmount = (page - 1) * limit;
+  const order = parseInt(req.query.order) || -1;
+
   try {
-    const post = await Post.findById(req.params.id);
-    if (post == null) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    const posts = await Post.find()
+    .sort({ timestamp: order })
+    .skip(skipAmount)
+    .limit(limit);
 
-    if (req.body.title != null) {
-      post.title = req.body.title;
-    }
-
-    if (req.body.content != null) {
-      post.content = req.body.content;
-    }
-
-    const updatedPost = await post.save();
-    res.json(updatedPost);
+    res.status(200).json(posts);
+    console.log("=== Posts fetched successfully.");
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "There has been an error while fetching the posts. Please try again later." });
   }
 });
 
-// Delete a post
-app.delete("/feed/:id", async (req, res) => {
+//Publish a new comment into DB
+app.post("/comments", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    if (post == null) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    const { author, text, postParentID } = req.body;
 
-    await post.remove();
-    res.json({ message: "Post deleted" });
+    const newComment = new Comment({
+      author,
+      text,
+      postParentID,
+    });
+
+    await newComment.save();
+
+    res.status(201).json(newComment);
+    console.log("=== New comment created.");
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "There has been an error while posting a content. Please try again later." });
   }
 });
+
+//Fetch all comments from DB with arguments, from a specific post
+app.get("/comments", async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skipAmount = (page - 1) * limit;
+  const order = parseInt(req.query.order) || -1;
+  const postID = req.query.postParentID;
+
+  try {
+    const comments = await Comment.find({ postParentID: postID })
+    .sort({ timestamp: order })
+    .skip(skipAmount)
+    .limit(limit);
+
+    res.status(200).json(comments);
+    console.log("=== Comments from post ID " + postID + " fetched successfully.");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There has been an error while fetching the comments. Please try again later." });
+  }
+});
+
 
 app.listen(3001, () => console.log("=== Server running on port 3001."));
