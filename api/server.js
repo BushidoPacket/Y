@@ -40,6 +40,7 @@ app.post("/posts", async (req, res) => {
     const newPost = new Post({
       author,
       text,
+      timestamp: Date.now(),
     });
 
     await newPost.save();
@@ -82,6 +83,7 @@ app.post("/comments", async (req, res) => {
       author,
       text,
       postParentID,
+      timestamp: Date.now(),
     });
 
     await newComment.save();

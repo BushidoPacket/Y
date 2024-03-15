@@ -11,8 +11,8 @@ GET http://localhost:3001/comments?postParentID=65f34ff57b35401cef25749c
 POST http://localhost:3001/posts
 Content-Type: application/json
 
-{   "author": "Naděžda",
-    "text": "Order pizza"
+{   "author": "Jidáš",
+    "text": "Babiš ven!"
 }
 
 ###
