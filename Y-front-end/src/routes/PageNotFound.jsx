@@ -6,6 +6,7 @@ function PageNotFound() {
       <NavBar />
       <div>
         <h1>404: Page not found</h1>
+        <img src="https://media1.tenor.com/m/FcVg5W9zZJQAAAAC/error.gif" />
       </div>
     </>
   );

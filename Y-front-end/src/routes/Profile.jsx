@@ -3,7 +3,7 @@ import classes from "./Profile.module.css";
 import { useState } from "react";
 
 function Profile() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const PasswordInput = ({ placeholder }) => {
     const [password, setPassword] = useState("");
@@ -76,7 +76,18 @@ function Profile() {
     );
   };
 
-  return <>{isLogin ? <h2>Settings</h2> : <LoginPanel />}</>;
+  const SettingsPanel = () => {
+    return (
+      <>
+        <h1>Profile settings</h1>
+        <div className={classes.profileContainer}>
+          
+        </div>
+      </>
+    );
+  };
+
+  return <>{isLogin ? <SettingsPanel /> : <LoginPanel />}</>;
 }
 
 export default Profile;
