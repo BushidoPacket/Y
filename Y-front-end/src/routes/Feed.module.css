@@ -1,3 +1,77 @@
+/*### POST WRITING ###*/
+
+.writePostContainer {
+    /*border: 2px red dashed;*/
+    width: 50vw;
+    height: auto;
+    margin-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.685);
+    margin-bottom: 1rem;
+    border: 5px rgba(0, 0, 0, 0.274) solid;
+    border-radius: 1rem;
+}
+
+.writePostContainer > h4 {
+    margin-left: 2.5%;
+}
+
+.writePostContainer > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.writePostContainer > form > input[name="author"] {
+    display: none;
+    content: "test";
+}
+
+.writePostContainer > form > textarea {
+    /*border: 2px green dashed;*/
+    width: 95%;
+    height: 10vh;
+    align-self: center;
+    margin-bottom: 1rem;
+    resize: none;
+    overflow: auto;
+
+
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: white;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    font-size: 1rem;
+}
+
+.writePostContainer > form > button {
+    width: 5rem;
+    height: fit-content;
+
+    background-color: black;
+    color: white;
+
+    border-radius: 0.5rem;
+    border: 2px solid white;
+}
+
+.writePostContainer > form > button:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    cursor: pointer;
+}
+
+
+
+
+/*### POSTS STYLES ###*/
+
 .container {
     /*border: 2px red dashed;*/
     width: 50vw;
