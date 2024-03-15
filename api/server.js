@@ -19,6 +19,19 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 
 
+const dateFormat = (timestamp) => {
+    
+  return new Date(timestamp * 1).toLocaleString("cs-CZ", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
+
 //Publish a new post into DB
 app.post("/posts", async (req, res) => {
   try {
@@ -53,7 +66,7 @@ app.get("/posts", async (req, res) => {
     .limit(limit);
 
     res.status(200).json(posts);
-    console.log("=== Posts fetched successfully.");
+    console.log("=== Posts fetched successfully at "+ dateFormat(Date.now()) +".");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "There has been an error while fetching the posts. Please try again later." });
