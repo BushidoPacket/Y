@@ -1,12 +1,16 @@
 .navmain {
+    position: fixed;
+    top: 0;
+    left: 0;
+
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0.5rem;
     width: 400px;
     background: rgba(0, 0, 0, 0.411);
+    border-radius: 0rem 5rem 5rem 5rem;
     border: 5px rgba(0, 0, 0, 0.274) solid;
-    border-radius: 5rem;
 }
 
 .navmain a, .navmain a:visited {
