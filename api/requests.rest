@@ -8,6 +8,20 @@ GET http://localhost:3001/comments?postParentID=65f34ff57b35401cef25749c
 
 ###
 
+POST http://localhost:3001/users
+Content-Type: application/json
+
+{   "username": "Jidáš",
+    "email": "test@seznam.cz",
+    "password": "123456"
+}
+###
+
+GET http://localhost:3001/users?username=Jidáš&password="123456"
+
+
+
+###
 POST http://localhost:3001/posts
 Content-Type: application/json
 

@@ -1,9 +1,10 @@
 import classes from "./Profile.module.css";
+import AppTitle from "../components/AppTitle";
 
 import { useState } from "react";
 
 function Profile() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   const PasswordInput = ({ placeholder }) => {
     const [password, setPassword] = useState("");
@@ -80,14 +81,26 @@ function Profile() {
     return (
       <>
         <h1>Profile settings</h1>
-        <div className={classes.profileContainer}>
-          
-        </div>
+        <div className={classes.profileContainer}></div>
       </>
     );
   };
 
-  return <>{isLogin ? <SettingsPanel /> : <LoginPanel />}</>;
+  return (
+    <>
+      {isLogin ? (
+        <>
+          <SettingsPanel />
+          <AppTitle title="Y - profile" />
+        </>
+      ) : (
+        <>
+          <LoginPanel />
+          <AppTitle title="Y - login/register" />
+        </>
+      )}
+    </>
+  );
 }
 
 export default Profile;
