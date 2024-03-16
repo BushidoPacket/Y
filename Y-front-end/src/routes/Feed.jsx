@@ -1,5 +1,6 @@
 import classes from "./Feed.module.css";
 import React, { useEffect, useState } from "react";
+import AppTitle from "../components/AppTitle";
 
 function Feed() {
   const API = "http://localhost:3001";
@@ -68,6 +69,8 @@ function Feed() {
   const postsLoadingHandler = () => {
     if (postLoaded) {
       return posts.map((post, index) => (
+        <>
+        <AppTitle title="Y - Feed" />
         <div key={index} className={classes.post}>
           <img src={post.image} />
           <h3>{post.author}</h3>
@@ -86,12 +89,17 @@ function Feed() {
             </div>
           </div>
         </div>
+        </>
       ));
     } else {
       return (
-        <div>
+        <>
+        <AppTitle title="Y - Loading posts..." />
+        <div className={classes.loading}>
           <h1>Loading posts...</h1>
+          <img src="/Spinner-1s-197px.svg"/>
         </div>
+        </>
       );
     }
   };

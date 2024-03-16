@@ -71,6 +71,18 @@
 
 /*### POSTS STYLES ###*/
 
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading > img {
+    width: 5rem;
+    height: 5rem;
+
+}
+
 .container {
     /*border: 2px red dashed;*/
     width: 50vw;
