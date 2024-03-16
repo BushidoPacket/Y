@@ -15,6 +15,18 @@
     align-content: center;
 }
 
+.navcontainer > .navmain > img {
+    /*position: fixed;*/
+    overflow: hidden;
+
+    left: 1rem;
+    width: 4rem;
+    height: 4rem;
+
+    clip-path: circle(40% at center);
+    filter: contrast(150%);
+}
+
 .navmain {
     display: flex;
     justify-content: center;

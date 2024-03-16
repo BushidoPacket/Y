@@ -9,6 +9,7 @@ function NavBar() {
     
       <div className={classes.navcontainer}>
         <nav className={classes.navmain}>
+        <img src="/logo.jpg" />
           <Link to="/" className={classes.link}>
             Feed
           </Link>
