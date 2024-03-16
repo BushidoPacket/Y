@@ -1,15 +1,28 @@
-.navmain {
-    position: fixed;
-    top: 0;
-    left: 0;
+.filler {
+    width: 100vw;
+    height: 5rem;
+}
 
+.navcontainer {
+    width: 100vw;
+    height: fit-content;
+    position: fixed;
+
+    /*background-image: radial-gradient(ellipse at top left, #2e0d0d, #2e101023);*/
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.navmain {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0.5rem;
     width: 400px;
-    background: rgba(0, 0, 0, 0.411);
-    border-radius: 0rem 5rem 5rem 5rem;
+    background: rgb(0, 0, 0);
+    border-radius: 0rem 5rem 0rem 5rem;
     border: 5px rgba(0, 0, 0, 0.274) solid;
 }
 

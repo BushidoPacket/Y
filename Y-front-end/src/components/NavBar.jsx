@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import classes from "./NavBar.module.css";
 
 function NavBar() {
+  
   return (
     <>
-      <div>
+    
+      <div className={classes.navcontainer}>
         <nav className={classes.navmain}>
           <Link to="/" className={classes.link}>
             Feed
@@ -18,6 +20,8 @@ function NavBar() {
           </Link>
         </nav>
       </div>
+
+      <div className={classes.filler}></div>
     </>
   );
 }
