@@ -122,22 +122,20 @@ function Feed() {
 
   const writePost = () => {
     return (
-      <div className={classes.writePostContainer}>
+      <>
         <h4>Write a new post...</h4>
         <form onSubmit={handlePostSubmit}>
           <input name="author" type="text"></input>
           <textarea id="contentInput" name="text" rows={3} placeholder="What's on your mind?"></textarea>
           <button type="submit">Post</button>
         </form>
-      </div>
+      </>
     );
   };
 
-  //setPosts(prev => ({ ...prev, posts: posts}))
-
   return (
     <>
-      {writePost()}
+      <div className={classes.writePostContainer}>{writePost()}</div>
 
       <div className={classes.container}>{postsLoadingHandler()}</div>
     </>

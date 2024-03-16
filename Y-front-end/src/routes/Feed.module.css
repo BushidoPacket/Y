@@ -25,7 +25,6 @@
 
 .writePostContainer > form > input[name="author"] {
     display: none;
-    content: "test";
 }
 
 .writePostContainer > form > textarea {
@@ -122,6 +121,7 @@
 }
 
 .buttonContainer button {
+    display: none;
     font-size: 1.25rem;
     width: fit-content;
     height: fit-content;
