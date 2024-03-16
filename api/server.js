@@ -17,10 +17,9 @@ mongoose
 
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
-
+const User = require("./models/User");
 
 const dateFormat = (timestamp) => {
-    
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
     month: "short",
     day: "2-digit",
@@ -29,7 +28,79 @@ const dateFormat = (timestamp) => {
     minute: "2-digit",
     second: "2-digit",
   });
-}
+};
+
+//Register a new user into DB
+const hashPassword = require("./auth");
+app.post("/users", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const { saltValue, passwordValue } = hashPassword(password);
+
+    const newUser = new User({
+      username: username,
+      email: email,
+      password: passwordValue,
+      salt: saltValue,
+      creationDate: Date.now(),
+      profilePicture: "../profile_pictures/default.png",
+    });
+
+    await newUser.save();
+
+    res.status(201).json(newUser);
+    console.log("=== New user has been registered.");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error:
+        "There has been an error while registering an user. Please try again later.",
+    });
+  }
+});
+
+//Check whether an user is in DB with the right username and password
+const compare = require("./auth");
+app.get("/users", async (req, res) => {
+  const user = req.query.username;
+  const password = req.query.password;
+  //console.log("input: " + password);
+
+  try {
+    const userFound = await User.findOne({username: user});
+    if (userFound) {
+
+      const isPasswordMatch = compare(password, userFound.password, userFound.salt);
+      if (isPasswordMatch) {
+      res.status(200).json({ message: "User logged in successfully." });
+      console.log(
+        "=== User " + user + " has logged in at " + dateFormat(Date.now()) + "."
+      );
+      } else {
+      res.status(401).json({ error: "Invalid password." });
+      console.log(
+        "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + " with invalid password."
+      );
+      };
+
+    } else {
+      res.status(404).json({ error: "User not found." });
+      console.log(
+        "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + ", but user was not found."
+      );
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error:
+        "There has been an error while logging in an user " + user + " . Please try again later."
+    });
+  }
+});
+
+
 
 
 //Publish a new post into DB
@@ -49,7 +120,10 @@ app.post("/posts", async (req, res) => {
     console.log("=== New post created.");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "There has been an error while posting a content. Please try again later." });
+    res.status(500).json({
+      error:
+        "There has been an error while posting a content. Please try again later.",
+    });
   }
 });
 
@@ -62,15 +136,20 @@ app.get("/posts", async (req, res) => {
 
   try {
     const posts = await Post.find()
-    .sort({ timestamp: order })
-    .skip(skipAmount)
-    .limit(limit);
-
+      .sort({ timestamp: order })
+      .skip(skipAmount)
+      .limit(limit);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     res.status(200).json(posts);
-    console.log("=== Posts fetched successfully at "+ dateFormat(Date.now()) +".");
+    console.log(
+      "=== Posts fetched successfully at " + dateFormat(Date.now()) + "."
+    );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "There has been an error while fetching the posts. Please try again later." });
+    res.status(500).json({
+      error:
+        "There has been an error while fetching the posts. Please try again later.",
+    });
   }
 });
 
@@ -92,7 +171,10 @@ app.post("/comments", async (req, res) => {
     console.log("=== New comment created.");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "There has been an error while posting a content. Please try again later." });
+    res.status(500).json({
+      error:
+        "There has been an error while posting a content. Please try again later.",
+    });
   }
 });
 
@@ -106,17 +188,21 @@ app.get("/comments", async (req, res) => {
 
   try {
     const comments = await Comment.find({ postParentID: postID })
-    .sort({ timestamp: order })
-    .skip(skipAmount)
-    .limit(limit);
+      .sort({ timestamp: order })
+      .skip(skipAmount)
+      .limit(limit);
 
     res.status(200).json(comments);
-    console.log("=== Comments from post ID " + postID + " fetched successfully.");
+    console.log(
+      "=== Comments from post ID " + postID + " fetched successfully."
+    );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "There has been an error while fetching the comments. Please try again later." });
+    res.status(500).json({
+      error:
+        "There has been an error while fetching the comments. Please try again later.",
+    });
   }
 });
-
 
 app.listen(3001, () => console.log("=== Server running on port 3001."));

@@ -12,34 +12,44 @@ const salt = (length) => {
     return result;
 }
 
-//Get salt to password and hash it
-const hash = (password, salt) => {
-    return sha256(password + salt).toString();
-}
 
 //Create hashed password and salt and returns both values to store it into DB
 const hashPassword = (password) => {
     const lengthOfSalt = Math.floor(Math.random() * 9) + 8;
     const storedSalt = salt(lengthOfSalt);
-    const hashedPassword = hash(password, storedSalt);
+    const hashedPassword = createHash(password, storedSalt);
     return { 
         saltValue: storedSalt, 
         passwordValue: hashedPassword, 
     };
 }
+module.exports = hashPassword;
 
 
 //Compare password input with hashed password from DB
 const compare = (password, salt, hashedPassword) => {
-    return hash(password, salt) === hashedPassword;
+    return (createHash(password, salt) === hashedPassword);
 }
+module.exports = compare;
+
+
+//Get salt to password and hash it
+const createHash = (password, salt) => {
+    return sha256(password + salt).toString();
+}
+module.exports = createHash;
+
+//Tests
 
 //console.log(salt(10));
 //console.log(hash('password', "0b"));
 //console.log(compare('password', "0b", "4d1d363de10fdc41f211cea72affdb72e0991735fb18ae13aa4f94d660511171"));
-console.log(hashPassword('password'));
+//console.log(hashPassword('password'));
 
-console.log(compare("password", "WcKBR*7h", "4fb6f197a8487e7168b6ceb53e01734a081741492998a5b00172973977b45032"))
+//console.log(compare("password", "WcKBR*7h", "4fb6f197a8487e7168b6ceb53e01734a081741492998a5b00172973977b45032"))
 
 //console.log(Math.floor(Math.random() * 9) + 8);
 
+//console.log(compare("123456", "0U<Xh5Y^J_T#E31", "0e1e65da1f3cbd17d4fe06db4dbbbe0526a6cad806008e35f5545509388ce995"));
+
+//console.log(createHash("123456", "5"));
