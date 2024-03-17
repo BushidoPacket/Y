@@ -19,6 +19,8 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
 
+const { hashPassword, compare, createHash } = require("./auth");
+
 const dateFormat = (timestamp) => {
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
     month: "short",
@@ -31,10 +33,17 @@ const dateFormat = (timestamp) => {
 };
 
 //Register a new user into DB
-const hashPassword = require("./auth");
+//const hashPassword = require("./auth");
 app.post("/users", async (req, res) => {
   try {
+
     const { username, email, password } = req.body;
+
+    const existingUser = await User.findOne({ username: username });
+    if (existingUser) {
+      console.log("=== Somebody tried to register already existing username: " + username);
+      return res.status(400).json({ error: "Username already exists" });
+    } 
 
     const { saltValue, passwordValue } = hashPassword(password);
 
@@ -61,11 +70,10 @@ app.post("/users", async (req, res) => {
 });
 
 //Check whether an user is in DB with the right username and password
-const compare = require("./auth");
+//const compare = require("./auth");
 app.get("/users", async (req, res) => {
   const user = req.query.username;
   const password = req.query.password;
-  //console.log("input: " + password);
 
   try {
     const userFound = await User.findOne({username: user});

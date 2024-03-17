@@ -23,21 +23,23 @@ const hashPassword = (password) => {
         passwordValue: hashedPassword, 
     };
 }
-module.exports = hashPassword;
+//odule.exports = hashPassword;
 
 
 //Compare password input with hashed password from DB
 const compare = (password, salt, hashedPassword) => {
     return (createHash(password, salt) === hashedPassword);
 }
-module.exports = compare;
+//module.exports = compare;
 
 
 //Get salt to password and hash it
 const createHash = (password, salt) => {
     return sha256(password + salt).toString();
 }
-module.exports = createHash;
+//odule.exports = createHash;
+
+module.exports = { hashPassword, compare, createHash };
 
 //Tests
 
