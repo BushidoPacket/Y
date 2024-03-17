@@ -39,7 +39,7 @@ const createHash = (password, salt) => {
 }
 //odule.exports = createHash;
 
-module.exports = { hashPassword, compare, createHash };
+module.exports = { hashPassword, compare };
 
 //Tests
 

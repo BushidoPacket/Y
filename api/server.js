@@ -19,7 +19,7 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
 
-const { hashPassword, compare, createHash } = require("./auth");
+const { hashPassword, compare } = require("./auth");
 
 const dateFormat = (timestamp) => {
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
