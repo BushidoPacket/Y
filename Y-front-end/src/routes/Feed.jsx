@@ -1,9 +1,9 @@
 import classes from "./Feed.module.css";
 import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
+import API from "../components/Addressables";
 
 function Feed() {
-  const API = "http://localhost:3001";
 
   const [posts, setPosts] = useState([]);
   const [postLoaded, setPostLoaded] = useState(false);
