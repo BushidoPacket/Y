@@ -19,7 +19,7 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
 
-const { hashPassword, compare } = require("./auth");
+const { hashPassword, compare, createToken, verifyToken } = require("./auth");
 
 const dateFormat = (timestamp) => {
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
@@ -34,7 +34,7 @@ const dateFormat = (timestamp) => {
 
 //Register a new user into DB
 //const hashPassword = require("./auth");
-app.post("/users", async (req, res) => {
+app.post("/users/new", async (req, res) => {
   try {
 
     const { username, email, password } = req.body;
@@ -65,7 +65,7 @@ app.post("/users", async (req, res) => {
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully." });
-    console.log("=== New user" + username + "has been registered.");
+    console.log("=== New user " + username + " has been registered.");
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -77,7 +77,7 @@ app.post("/users", async (req, res) => {
 
 //Check whether an user is in DB with the right username and password
 //const compare = require("./auth");
-app.put("/users", async (req, res) => {
+app.put("/users/login", async (req, res) => {
   const user = req.body.username;
   const password = req.body.password;
   
@@ -89,22 +89,23 @@ app.put("/users", async (req, res) => {
       const isPasswordMatch = compare(password, userFound.salt, userFound.password);
       
       if (isPasswordMatch) {
-      res.status(200).json({ message: "User logged in successfully." });
-      console.log(
-        "=== User " + user + " has logged in at " + dateFormat(Date.now()) + "."
-      );
+        const token = createToken(user, "30d");
+        res.status(200).json({ message: "User logged in successfully.", token });
+        console.log(
+          "=== User " + user + " has logged in at " + dateFormat(Date.now()) + "."
+        );
       } else {
-      res.status(401).json({ error: "Invalid password." });
-      console.log(
-        "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + " with invalid password."
-      );
+        res.status(401).json({ error: "Invalid password." });
+        console.log(
+          "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + " with invalid password."
+        );
       };
 
     } else {
-      res.status(404).json({ error: "User not found." });
-      console.log(
-        "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + ", but user was not found."
-      );
+        res.status(404).json({ error: "User not found." });
+        console.log(
+          "=== User " + user + " has tried to log in at " + dateFormat(Date.now()) + ", but user was not found."
+        );
     }
     
   } catch (error) {
