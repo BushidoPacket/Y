@@ -4,7 +4,6 @@ import AppTitle from "../components/AppTitle";
 import API from "../components/Addressables";
 
 function Feed() {
-
   const [posts, setPosts] = useState([]);
   const [postLoaded, setPostLoaded] = useState(false);
 
@@ -18,6 +17,7 @@ function Feed() {
     }
     fetchPosts();
   }, []);
+
 
   const arePostsLoaded = (value) => {
     setPostLoaded(value);
@@ -69,36 +69,36 @@ function Feed() {
   const postsLoadingHandler = () => {
     if (postLoaded) {
       return posts.map((post, index) => (
-        <>
-        <AppTitle title="Y - Feed" />
-        <div key={index} className={classes.post}>
-          <img src={post.image} />
-          <h3>{post.author}</h3>
-          <p>{post.text}</p>
-          <div className={classes.footPostContainer}>
-            <div className={classes.timestamp}>
-              {dateFormat(post.timestamp)}
-            </div>
-            <div className={classes.buttonContainer}>
-              <button>
-                <img src="../icons/edit.png" title="edit" />
-              </button>
-              <button>
-                <img src="../icons/bin.png" title="delete" />
-              </button>
+        <React.Fragment key={index}>
+          <AppTitle title="Y - Feed" />
+          <div className={classes.post}>
+            <img src={post.image} />
+            <h3>{post.author}</h3>
+            <p>{post.text}</p>
+            <div className={classes.footPostContainer}>
+              <div className={classes.timestamp}>
+                {dateFormat(post.timestamp)}
+              </div>
+              <div className={classes.buttonContainer}>
+                <button>
+                  <img src="../icons/edit.png" title="edit" />
+                </button>
+                <button>
+                  <img src="../icons/bin.png" title="delete" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        </>
+        </React.Fragment>
       ));
     } else {
       return (
         <>
-        <AppTitle title="Y - Loading posts..." />
-        <div className={classes.loading}>
-          <h1>Loading posts...</h1>
-          <img src="/Spinner-1s-197px.svg"/>
-        </div>
+          <AppTitle title="Y - Loading posts..." />
+          <div className={classes.loading}>
+            <h1>Loading posts...</h1>
+            <img src="/Spinner-1s-197px.svg" />
+          </div>
         </>
       );
     }
@@ -106,9 +106,9 @@ function Feed() {
 
   const postNewPost = async (author, text) => {
     const response = await fetch(`${API}/posts`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ author, text }),
     });
@@ -116,7 +116,7 @@ function Feed() {
     console.log(response);
     if (response.status === 201) {
       const newPost = await response.json();
-      setPosts(prevPosts => [newPost, ...prevPosts]);
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
       document.getElementById("contentInput").value = "";
     }
   };
@@ -134,7 +134,12 @@ function Feed() {
         <h4>Write a new post...</h4>
         <form onSubmit={handlePostSubmit}>
           <input name="author" type="text"></input>
-          <textarea id="contentInput" name="text" rows={3} placeholder="What's on your mind?"></textarea>
+          <textarea
+            id="contentInput"
+            name="text"
+            rows={3}
+            placeholder="What's on your mind?"
+          ></textarea>
           <button type="submit">Post</button>
         </form>
       </>
