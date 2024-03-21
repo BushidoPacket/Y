@@ -42,7 +42,13 @@ app.post("/users", async (req, res) => {
     const existingUser = await User.findOne({ username: username });
     if (existingUser) {
       console.log("=== Somebody tried to register already existing username: " + username);
-      return res.status(400).json({ error: "Username already exists" });
+      return res.status(400).json({ error: "Profile already exists." });
+    } 
+
+    const existingEmail = await User.findOne({ email: email });
+    if (existingEmail) {
+      console.log("=== Somebody tried to register already existing email: " + email);
+      return res.status(400).json({ error: "This e-mail address is already being used." });
     } 
 
     const { saltValue, passwordValue } = hashPassword(password);
@@ -58,8 +64,8 @@ app.post("/users", async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json(newUser);
-    console.log("=== New user has been registered.");
+    res.status(201).json({ message: "User registered successfully." });
+    console.log("=== New user" + username + "has been registered.");
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -71,15 +77,17 @@ app.post("/users", async (req, res) => {
 
 //Check whether an user is in DB with the right username and password
 //const compare = require("./auth");
-app.get("/users", async (req, res) => {
-  const user = req.query.username;
-  const password = req.query.password;
+app.put("/users", async (req, res) => {
+  const user = req.body.username;
+  const password = req.body.password;
+  
 
   try {
     const userFound = await User.findOne({username: user});
     if (userFound) {
 
-      const isPasswordMatch = compare(password, userFound.password, userFound.salt);
+      const isPasswordMatch = compare(password, userFound.salt, userFound.password);
+      
       if (isPasswordMatch) {
       res.status(200).json({ message: "User logged in successfully." });
       console.log(
