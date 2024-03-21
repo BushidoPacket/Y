@@ -1,4 +1,6 @@
 const sha256 = require('crypto-js/sha256');
+const jwt = require('jsonwebtoken');
+require('dotenv').config({ path: './private.env' });
 
 //Generate random salt
 const salt = (length) => {
@@ -23,35 +25,43 @@ const hashPassword = (password) => {
         passwordValue: hashedPassword, 
     };
 }
-//odule.exports = hashPassword;
 
 
 //Compare password input with hashed password from DB
 const compare = (password, salt, hashedPassword) => {
     return (createHash(password, salt) === hashedPassword);
 }
-//module.exports = compare;
 
 
 //Get salt to password and hash it
 const createHash = (password, salt) => {
     return sha256(password + salt).toString();
 }
-//odule.exports = createHash;
 
-module.exports = { hashPassword, compare };
 
-//Tests
 
-//console.log(salt(10));
-//console.log(hash('password', "0b"));
-//console.log(compare('password', "0b", "4d1d363de10fdc41f211cea72affdb72e0991735fb18ae13aa4f94d660511171"));
-//console.log(hashPassword('password'));
+//#######################
+//JWT
+//#######################
 
-//console.log(compare("password", "WcKBR*7h", "4fb6f197a8487e7168b6ceb53e01734a081741492998a5b00172973977b45032"))
 
-//console.log(Math.floor(Math.random() * 9) + 8);
+//Create JWT token
+const createToken = (user, exp) => {
+    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: exp });
+}
 
-//console.log(compare("123456", "0U<Xh5Y^J_T#E31", "0e1e65da1f3cbd17d4fe06db4dbbbe0526a6cad806008e35f5545509388ce995"));
+const verifyToken = (token) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            console.error('Error while verifying token: ', err);
+            return false;
+        } else {
+            console.log('Token verified: ', decoded);
+            return decoded;
+        }
+    });
+}
 
-//console.log(createHash("123456", "5"));
+//Export modules
+
+module.exports = { hashPassword, compare, createToken, verifyToken };
