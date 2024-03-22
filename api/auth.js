@@ -51,16 +51,19 @@ const createToken = (user, exp) => {
 }
 
 const verifyToken = (token) => {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            console.error('Error while verifying token: ', err);
-            return false;
-        } else {
-            console.log('Token verified: ', decoded);
-            return decoded;
-        }
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                console.error('Error while verifying token:', err.message);
+                reject(err);
+            } else {
+                console.log('Token verified:', decoded);
+                resolve(decoded);
+            }
+        });
     });
 }
+
 
 //Export modules
 

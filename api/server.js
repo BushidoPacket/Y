@@ -118,15 +118,46 @@ app.put("/users/login", async (req, res) => {
 });
 
 
+/*app.put("/users/verify", async (req, res) => {
+  const token = req.body.token;
+
+  try {
+    const decoded = await verifyToken(token);
+    //console.log("=== Token verified for user " + decoded.user + " .");
+    res.status(200).json({ message: "Token verified.", user: decoded.user });
+  } catch (error) {
+    console.log("=== Token not verified.");
+    res.status(401).json({ error: "Token not verified." });
+  }
+});*/
 
 
 //Publish a new post into DB
-app.post("/posts", async (req, res) => {
+app.post("/posts/new", async (req, res) => {
+
+  //Authorize user
+  const token = req.headers["authorization"];
+  console.log("Token: " + token);
+
+  let author = "";
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized." });
+  }
+
   try {
-    const { author, text } = req.body;
+    const decoded = await verifyToken(token);
+    author = decoded.user;
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token." });
+  }
+
+  //Create post
+  try {
+    const { text } = req.body;
 
     const newPost = new Post({
-      author,
+      author: author,
       text,
       timestamp: Date.now(),
     });
