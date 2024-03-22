@@ -137,7 +137,6 @@ app.post("/posts/new", async (req, res) => {
 
   //Authorize user
   const token = req.headers["authorization"];
-  console.log("Token: " + token);
 
   let author = "";
 
@@ -165,7 +164,7 @@ app.post("/posts/new", async (req, res) => {
     await newPost.save();
 
     res.status(201).json(newPost);
-    console.log("=== New post created.");
+    console.log("=== New post created at " + dateFormat(Date.now()) + " from " + author + ".");
   } catch (error) {
     console.error(error);
     res.status(500).json({

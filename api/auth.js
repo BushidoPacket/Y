@@ -54,10 +54,10 @@ const verifyToken = (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
-                console.error('Error while verifying token:', err.message);
+                //console.error('Error while verifying token:', err.message);
                 reject(err);
             } else {
-                console.log('Token verified:', decoded);
+                //console.log('Token verified:', decoded);
                 resolve(decoded);
             }
         });
