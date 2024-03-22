@@ -158,7 +158,7 @@ app.post("/posts/new", async (req, res) => {
 
     const newPost = new Post({
       author: author,
-      text,
+      text: text,
       timestamp: Date.now(),
     });
 

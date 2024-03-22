@@ -1,151 +1,20 @@
-.profileContainer {
-    background-color: rgba(0, 0, 0, 0.336);
-    border: 5px rgba(0, 0, 0, 0.274) solid;
-    border-radius: 2rem;
-    width: 60vw;
-    height: auto;
-    min-height: 60vh;
-    
+.logRegContainer {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-evenly;
-}
 
-.profileContainer h4 {
-    user-select: none;
-}
+    width: 60%;
+    height: fit-content;
 
-.itemContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1rem;
-}
-
-.itemContainer input {
-    width: 15rem;
-    height: 1.5rem;
-    margin-top: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.205);
-    color: rgb(255, 255, 255);
-    border: 1px white solid;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    font-weight: bold;
-}
-
-.itemContainer input:focus {
-    outline: none;
-    border: 1px yellow solid;
-}
-
-.itemContainer input:not(:placeholder-shown) {
-    outline: none;
-    border: 1px yellow solid;
-}
-
-.itemContainer label {
-    user-select: none;
-}
-
-.loginContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1rem;
-    /*border: 2px red dashed;*/
-}
-
-.registerContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1rem;
-    /*border: 2px red dashed;*/
+    background-color: black;
 }
 
 .separator {
+
     background-color: rgba(255, 255, 255, 0.342);
     width: 0.125rem;
-    height: 50vh;
-    align-self: center;
-}
-
-.loginContainer button, .registerContainer button {
-    width: fit-content;
-    height: fit-content;
-    padding: 0.25rem;
-    background-color: rgba(255, 255, 255, 0.342);
-    color: white;
-    border: 1px white solid;
-    border-radius: 0.5rem;
-
-    transform: translateY(calc(var(--y, 0) * 1%)) scale(var(--scale));
-    transition: transform 0.1s;
-    position: relative;
-}
-
-.loginContainer button:hover, .registerContainer button:hover {
-    --y: -10;
-    --scale: 1.1;
-    --border-scale: 1;
-    cursor: pointer;
-}
-  
-.loginContainer button:active, .registerContainer button:active {
-    --y: 5%;
-    --scale: 0.9;
-    --border-scale: 0.9, 0.8;
-}
-  
-.loginContainer button:before, .registerContainer button:before {
-    content: "";
-    position: absolute;
-    inset: calc(var(--size-3) * -1);
-    border: var(--size-2) solid var(--gray-0);
-    transform: scale(var(--border-scale, 0));
-    transition: transform 0.125s;
+    height: 20vh;
     
-    --angle-one: 105deg;
-    --angle-two: 290deg;
-    --spread-one: 30deg;
-    --spread-two: 40deg;
-    --start-one: calc(var(--angle-one) - (var(--spread-one) * 0.5));
-    --start-two: calc(var(--angle-two) - (var(--spread-two) * 0.5));
-    --end-one: calc(var(--angle-one) + (var(--spread-one) * 0.5));
-    --end-two: calc(var(--angle-two) + (var(--spread-two) * 0.5));
-    
-    mask: conic-gradient(
-      transparent 0 var(--start-one),
-      white var(--start-one) var(--end-one),
-      transparent var(--end-one) var(--start-two),
-      white var(--start-two) var(--end-two),
-      transparent var(--end-two)
-    );
-    
-    z-index: -1;
+
 }
-
-
-.passwordInput {
-    position: relative;
-  }
-  
-  .passwordInput input[type="text"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-  }
-  
-  .passwordInput:hover input[type="text"] {
-    opacity: 1;
-  }
-  
-  .passwordInput:hover input[type="password"] {
-    opacity: 0; /* Hide the password input when hovering */
-  }
-  
-  .passwordInput:hover input[type="text"] {
-    opacity: 1; /* Show the text overlay input when hovering */
-  }
