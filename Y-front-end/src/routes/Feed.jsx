@@ -104,7 +104,7 @@ function Feed() {
     }
   };
 
-  const postNewPost = async (author, text) => {
+  const postNewPost = async (text) => {
 
     if (text === "" || text === null || text === undefined || text.length < 2) {
       alert("Your post is too short, minimum length is 2 characters.");
@@ -132,9 +132,8 @@ function Feed() {
 
   const handlePostSubmit = (event) => {
     event.preventDefault();
-    const author = "testovaci autor"; //event.target.elements.author.value;
     const text = event.target.elements.text.value;
-    postNewPost(author, text);
+    postNewPost(text);
   };
 
   const writePost = () => {
