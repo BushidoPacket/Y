@@ -1,7 +1,7 @@
 import classes from "./Feed.module.css";
 import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
-import API from "../components/Addressables";
+import API from "../components/Addressables.jsx";
 
 function Feed() {
   const [posts, setPosts] = useState([]);
@@ -105,12 +105,21 @@ function Feed() {
   };
 
   const postNewPost = async (author, text) => {
-    const response = await fetch(`${API}/posts`, {
+
+    if (text === "" || text === null || text === undefined || text.length < 2) {
+      alert("Your post is too short, minimum length is 2 characters.");
+      return;
+    }
+
+    const TOKEN = localStorage.getItem("token");
+
+    const response = await fetch(`${API}/posts/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": TOKEN,
       },
-      body: JSON.stringify({ author, text }),
+      body: JSON.stringify({ text }),
     });
 
     console.log(response);
@@ -133,7 +142,6 @@ function Feed() {
       <>
         <h4>Write a new post...</h4>
         <form onSubmit={handlePostSubmit}>
-          <input name="author" type="text"></input>
           <textarea
             id="contentInput"
             name="text"
