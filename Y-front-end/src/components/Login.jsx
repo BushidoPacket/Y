@@ -24,6 +24,7 @@ function Login() {
             const user = await response.json();
             localStorage.setItem("token", user.token);
             alert(user.message);
+            window.location.reload();
             //redirect settings
         }
     };

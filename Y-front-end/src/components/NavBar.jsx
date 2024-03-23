@@ -1,8 +1,24 @@
 import { Link } from "react-router-dom";
+import { useEffect } from 'react';
 
 import classes from "./NavBar.module.css";
 
+const TOKEN = localStorage.getItem('token');
+
 function NavBar() {
+
+  useEffect(() => {
+    
+    if (!TOKEN) {
+      document.querySelector('.' + classes.logBtn).style.display = 'none';
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    document.querySelector('.' + classes.logBtn).style.display = 'none';
+    window.location.reload();
+  };
   
   return (
     <>
@@ -20,6 +36,8 @@ function NavBar() {
             Search
           </Link>
         </nav>
+
+        <button className={classes.logBtn} onClick={handleLogout}>Log out</button>
       </div>
 
       <div className={classes.filler}></div>
