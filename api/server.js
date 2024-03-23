@@ -140,7 +140,7 @@ app.post("/posts/new", async (req, res) => {
 
   let author = "";
 
-  if (!token) {
+  if (!token || token === "" || token === "null" || token === "undefined" || token === undefined || token === null) {
     return res.status(401).json({ error: "Unauthorized." });
   }
 
@@ -186,7 +186,7 @@ app.get("/posts", async (req, res) => {
       .sort({ timestamp: order })
       .skip(skipAmount)
       .limit(limit);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    //await new Promise((resolve) => setTimeout(resolve, 2000));
     res.status(200).json(posts);
     console.log(
       "=== Posts fetched successfully at " + dateFormat(Date.now()) + "."
