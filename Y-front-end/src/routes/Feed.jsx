@@ -3,9 +3,25 @@ import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
 import API from "../components/Addressables.jsx";
 
+const TOKEN = localStorage.getItem("token");
+
 function Feed() {
   const [posts, setPosts] = useState([]);
   const [postLoaded, setPostLoaded] = useState(false);
+  const [tokenFilled, setTokenFilled] = useState(false);
+
+  useEffect(() => {
+    if (
+      TOKEN !== null &&
+      TOKEN !== "" &&
+      TOKEN !== "null" &&
+      TOKEN !== "undefined" &&
+      TOKEN !== undefined &&
+      TOKEN !== null
+    ) {
+      setTokenFilled(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -17,7 +33,6 @@ function Feed() {
     }
     fetchPosts();
   }, []);
-
 
   const arePostsLoaded = (value) => {
     setPostLoaded(value);
@@ -105,28 +120,27 @@ function Feed() {
   };
 
   const postNewPost = async (text) => {
-
     if (text === "" || text === null || text === undefined || text.length < 2) {
       alert("Your post is too short, minimum length is 2 characters.");
       return;
     }
 
-    const TOKEN = localStorage.getItem("token");
-
     const response = await fetch(`${API}/posts/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN,
+        Authorization: TOKEN,
       },
       body: JSON.stringify({ text }),
     });
 
-    console.log(response);
     if (response.status === 201) {
       const newPost = await response.json();
       setPosts((prevPosts) => [newPost, ...prevPosts]);
       document.getElementById("contentInput").value = "";
+    } else {
+      const output = await response.json();
+      alert(output.error);
     }
   };
 
@@ -145,9 +159,16 @@ function Feed() {
             id="contentInput"
             name="text"
             rows={3}
-            placeholder="What's on your mind?"
+            placeholder={
+              tokenFilled
+                ? "What's on your mind?"
+                : "You need to be logged in to post.\n\nGo to the profile page to log in."
+            }
+            disabled={!tokenFilled}
           ></textarea>
-          <button type="submit">Post</button>
+          <button type="submit" disabled={!tokenFilled}>
+            Post
+          </button>
         </form>
       </>
     );
