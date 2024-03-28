@@ -11,6 +11,7 @@
     margin-bottom: 1rem;
     border: 5px rgba(0, 0, 0, 0.274) solid;
     border-radius: 1rem;
+    animation: fade-in 1.5s;
 }
 
 .writePostContainer > h4 {
@@ -75,6 +76,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 5rem;
 }
 
 .loading > img {
@@ -87,7 +89,7 @@
     /*border: 2px red dashed;*/
     width: 50vw;
     height: auto;
-    min-height: 70vh;
+    /*min-height: 70vh;*/
     display: flex;
     flex-direction: column;
 }
@@ -101,6 +103,7 @@
     background-color: rgba(0, 0, 0, 0.336);
     margin-bottom: 1rem;
     border: 5px rgba(0, 0, 0, 0.274) solid;
+    animation: fade-in 1.5s;
 }
 
 .post h3 {
@@ -196,4 +199,18 @@
     );
     
     z-index: -1;
+}
+
+
+
+/*### KEY FRAMES ###*/
+@keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 100;
+      transform: scale(1);
+    }
 }

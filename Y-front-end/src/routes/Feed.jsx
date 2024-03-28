@@ -2,13 +2,15 @@ import classes from "./Feed.module.css";
 import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
 import API from "../components/Addressables.jsx";
+import ScrollDetector from "../components/ScrollDetector.jsx";
 
 const TOKEN = localStorage.getItem("token");
 
 function Feed() {
   const [posts, setPosts] = useState([]);
-  const [postLoaded, setPostLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [tokenFilled, setTokenFilled] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (
@@ -25,17 +27,20 @@ function Feed() {
 
   useEffect(() => {
     async function fetchPosts() {
-      arePostsLoaded(false);
-      const response = await fetch(`${API}/posts`);
+      console.log("fetching posts page: " + page);
+      setLoading(true);
+      const response = await fetch(`${API}/posts?page=${page}`);
       const data = await response.json();
-      setPosts(data);
-      arePostsLoaded(true);
+      setPosts((prevPosts) => [...prevPosts, ...data]);
+      setLoading(false);
     }
     fetchPosts();
-  }, []);
+  }, [page]);
 
-  const arePostsLoaded = (value) => {
-    setPostLoaded(value);
+  const handleScrollToBottom = () => {
+    console.log("scrolling to bottom");
+
+    setPage((prevPage) => prevPage + 1);
   };
 
   const dateFormat = (timestamp) => {
@@ -81,41 +86,45 @@ function Feed() {
     }
   };
 
+  //The actual structure of the posts
   const postsLoadingHandler = () => {
-    if (postLoaded) {
-      return posts.map((post, index) => (
-        <React.Fragment key={index}>
-          <AppTitle title="Y - Feed" />
-          <div className={classes.post}>
-            <img src={post.image} />
-            <h3>{post.author}</h3>
-            <p>{post.text}</p>
-            <div className={classes.footPostContainer}>
-              <div className={classes.timestamp}>
-                {dateFormat(post.timestamp)}
-              </div>
-              <div className={classes.buttonContainer}>
-                <button>
-                  <img src="../icons/edit.png" title="edit" />
-                </button>
-                <button>
-                  <img src="../icons/bin.png" title="delete" />
-                </button>
-              </div>
+    return posts.map((post, index) => (
+      <React.Fragment key={index}>
+        <AppTitle title="Y - Feed" />
+        <div className={classes.post}>
+          <img src={post.image} />
+          <h3>{post.author}</h3>
+          <p>{post.text}</p>
+          <div className={classes.footPostContainer}>
+            <div className={classes.timestamp}>
+              {dateFormat(post.timestamp)}
+            </div>
+            <div className={classes.buttonContainer}>
+              <button>
+                <img src="../icons/edit.png" title="edit" />
+              </button>
+              <button>
+                <img src="../icons/bin.png" title="delete" />
+              </button>
             </div>
           </div>
-        </React.Fragment>
-      ));
-    } else {
+        </div>
+      </React.Fragment>
+    ));
+  };
+
+  const loader = () => {
+    if (loading) {
+      //window.scrollTo(0, document.body.scrollHeight);
       return (
         <>
           <AppTitle title="Y - Loading posts..." />
-          <div className={classes.loading}>
-            <h1>Loading posts...</h1>
-            <img src="/Spinner-1s-197px.svg" />
-          </div>
+          <h1>Loading posts...</h1>
+          <img src="/Spinner-1s-197px.svg" />
         </>
       );
+    } else {
+      return <AppTitle title="Y - Feed" />;
     }
   };
 
@@ -179,6 +188,10 @@ function Feed() {
       <div className={classes.writePostContainer}>{writePost()}</div>
 
       <div className={classes.container}>{postsLoadingHandler()}</div>
+
+      <div className={classes.loading}>{loader()}</div>
+
+      <ScrollDetector onScrollToBottom={handleScrollToBottom} isLoading={loading}/>
     </>
   );
 }
