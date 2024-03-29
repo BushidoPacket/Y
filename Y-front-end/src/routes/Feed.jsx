@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
 import API from "../components/Addressables.jsx";
 import ScrollDetector from "../components/ScrollDetector.jsx";
+import Comments from "../components/Comments.jsx";
 
 const TOKEN = localStorage.getItem("token");
 
@@ -99,14 +100,7 @@ function Feed() {
             <div className={classes.timestamp}>
               {dateFormat(post.timestamp)}
             </div>
-            <div className={classes.buttonContainer}>
-              <button>
-                <img src="../icons/edit.png" title="edit" />
-              </button>
-              <button>
-                <img src="../icons/bin.png" title="delete" />
-              </button>
-            </div>
+            <Comments postID={post._id} dateHandler={dateFormat} tokenFilled={tokenFilled}/>
           </div>
         </div>
       </React.Fragment>
@@ -191,7 +185,10 @@ function Feed() {
 
       <div className={classes.loading}>{loader()}</div>
 
-      <ScrollDetector onScrollToBottom={handleScrollToBottom} isLoading={loading}/>
+      <ScrollDetector
+        onScrollToBottom={handleScrollToBottom}
+        isLoading={loading}
+      />
     </>
   );
 }

@@ -43,7 +43,7 @@
 }
 
 .newCommentContainer textarea {
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     resize: none;
     background-color: rgba(0, 0, 0, 0.267);
     padding: 0.5rem;
@@ -52,4 +52,57 @@
     outline: none;
 
     width: 90%;
+}
+
+.loadedComments {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem;
+}
+
+.comment {
+    display: flex;
+    flex-direction: column;
+
+    background-color: rgba(0, 0, 0, 0.267);
+    border-radius: 1rem;
+}
+
+.comment > h4 {
+    font-style: normal;
+    margin-left: 1rem;
+}
+
+.comment > .text {
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.comment > h4 > .timestamp {
+    margin: 0;
+    font-weight: 100;
+    font-size: 0.6rem;
+}
+
+.buttonLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.buttonLoader button {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+
+.buttonLoader button:hover {
+    background-color: rgb(146, 146, 146);
+    color: black;
+    cursor: pointer;
 }

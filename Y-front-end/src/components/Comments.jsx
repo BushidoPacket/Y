@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import classes from "./Comments.module.css";
 
@@ -7,11 +7,38 @@ import API from "./Addressables.jsx";
 
 const TOKEN = localStorage.getItem("token");
 
-function Comments({ postID, dateHandler }) {
+function Comments({ postID, dateHandler, tokenFilled }) {
   /*console.log("Datehandler: " + dateHandler(1711114204903));
   console.log("PostID: " + postID);*/
 
   const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [length, setLength] = useState(0);
+
+  useEffect(() => {
+    async function fetchComments() {
+      console.log("fetching comments"+ postID +" page: " + page);
+      setLoading(true);
+      const response = await fetch(`${API}/comments?page=${page}&postParentID=${postID}`);
+      const data = await response.json();
+      setComments((prevComments) => [...prevComments, ...data]);
+      setLoading(false);
+      setLength(data.length);
+    }
+    fetchComments();
+  }, [page]);
+
+  const commentsLoadingHandler = () => {
+    return comments.map((comment, index) => (
+      <React.Fragment key={index}>
+        <div className={classes.comment}>
+          <h4>{comment.author} | <span className={classes.timestamp}>{dateHandler(comment.timestamp)}</span></h4>
+          <p className={classes.text}>{comment.text}</p>
+        </div>
+      </React.Fragment>
+    ))
+  }
 
   const handleCommentSubmit = (event) => {
     event.preventDefault();
@@ -44,8 +71,6 @@ function Comments({ postID, dateHandler }) {
       const output = await response.json();
       alert(output.error);
     }
-
-    console.log(comments);
   };
 
   return (
@@ -55,7 +80,11 @@ function Comments({ postID, dateHandler }) {
         <form onSubmit={handleCommentSubmit}> 
           <textarea 
           rows={3} 
-          placeholder="Write a comment..." 
+          placeholder={
+            tokenFilled
+              ? "Write a comment..."
+              : "You need to be logged in to comment."
+          }
           name="text"
           id="commentInput"
           >
@@ -65,7 +94,18 @@ function Comments({ postID, dateHandler }) {
           </button>
         </form>
       </div>
-
+      <div className={classes.loadedComments}>
+        {commentsLoadingHandler()}
+        {loading && <p>Loading comments...</p>}
+      </div>
+      <div className={classes.buttonLoader}>
+        <button 
+          onClick={() => setPage(page + 1)}
+          style={{ display: length < 10 ? "none" : "block" }}
+        >
+          Load more comments
+        </button>
+      </div>
     </div>
     </>
   );
