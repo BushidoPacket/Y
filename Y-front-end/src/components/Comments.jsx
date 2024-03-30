@@ -18,27 +18,34 @@ function Comments({ postID, dateHandler, tokenFilled }) {
 
   useEffect(() => {
     async function fetchComments() {
-      console.log("fetching comments"+ postID +" page: " + page);
+      console.log("fetching comments" + postID + " page: " + page);
       setLoading(true);
-      const response = await fetch(`${API}/comments?page=${page}&postParentID=${postID}`);
+      const response = await fetch(
+        `${API}/comments?page=${page}&postParentID=${postID}`
+      );
       const data = await response.json();
-      setComments((prevComments) => [...prevComments, ...data]);
+      setComments(data);
       setLoading(false);
       setLength(data.length);
     }
     fetchComments();
-  }, [page]);
+  }, [page, postID]);
 
   const commentsLoadingHandler = () => {
     return comments.map((comment, index) => (
       <React.Fragment key={index}>
         <div className={classes.comment}>
-          <h4>{comment.author} | <span className={classes.timestamp}>{dateHandler(comment.timestamp)}</span></h4>
+          <h4>
+            {comment.author} |{" "}
+            <span className={classes.timestamp}>
+              {dateHandler(comment.timestamp)}
+            </span>
+          </h4>
           <p className={classes.text}>{comment.text}</p>
         </div>
       </React.Fragment>
-    ))
-  }
+    ));
+  };
 
   const handleCommentSubmit = (event) => {
     event.preventDefault();
@@ -75,38 +82,37 @@ function Comments({ postID, dateHandler, tokenFilled }) {
 
   return (
     <>
-    <div className={classes.commentsContainer}>
-      <div className={classes.newCommentContainer}>
-        <form onSubmit={handleCommentSubmit}> 
-          <textarea 
-          rows={3} 
-          placeholder={
-            tokenFilled
-              ? "Write a comment..."
-              : "You need to be logged in to comment."
-          }
-          name="text"
-          id="commentInput"
+      <div className={classes.commentsContainer}>
+        <div className={classes.newCommentContainer}>
+          <form onSubmit={handleCommentSubmit}>
+            <textarea
+              rows={3}
+              placeholder={
+                tokenFilled
+                  ? "Write a comment..."
+                  : "You need to be logged in to comment."
+              }
+              name="text"
+              id="commentInput"
+            ></textarea>
+            <button type="submit">
+              <img src="icons/chat-bubble.png" />
+            </button>
+          </form>
+        </div>
+        <div className={classes.loadedComments}>
+          {commentsLoadingHandler()}
+          {loading && <p>Loading comments...</p>}
+        </div>
+        <div className={classes.buttonLoader}>
+          <button
+            onClick={() => setPage(page + 1)}
+            style={{ display: length < 5 ? "none" : "block" }}
           >
-          </textarea>
-          <button type="submit">
-            <img src="icons/chat-bubble.png" />
+            Load more comments
           </button>
-        </form>
+        </div>
       </div>
-      <div className={classes.loadedComments}>
-        {commentsLoadingHandler()}
-        {loading && <p>Loading comments...</p>}
-      </div>
-      <div className={classes.buttonLoader}>
-        <button 
-          onClick={() => setPage(page + 1)}
-          style={{ display: length < 10 ? "none" : "block" }}
-        >
-          Load more comments
-        </button>
-      </div>
-    </div>
     </>
   );
 }
