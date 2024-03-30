@@ -94,10 +94,11 @@ function Comments({ postID, dateHandler, tokenFilled }) {
                   ? "Write a comment..."
                   : "You need to be logged in to comment."
               }
+              disabled={!tokenFilled}
               name="text"
               id="commentInput"
             ></textarea>
-            <button type="submit">
+            <button disabled={!tokenFilled} type="submit">
               <img src="icons/chat-bubble.png" />
             </button>
           </form>
