@@ -1,10 +1,12 @@
+@import url('https://fonts.cdnfonts.com/css/sofia-pro');
+
 * {
     box-sizing: border-box;
 }
   
 :root {
     min-height: 100vh;
-    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Sofia Pro', sans-serif;
     background-image: radial-gradient(ellipse at top left, #2e0d0d, #090925);
     background-attachment: fixed;    
     font-synthesis: none;
@@ -26,4 +28,9 @@ body {
     margin: 0;
     color: #e6ddf9;
 }
-  
+
+@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) { 
+    :root { 
+        width: 98%; 
+    } 
+}
