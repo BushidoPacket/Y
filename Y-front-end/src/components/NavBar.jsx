@@ -7,6 +7,7 @@ const TOKEN = localStorage.getItem('token');
 
 function NavBar() {
 
+  //Hide log out button if user is not logged in
   useEffect(() => {
     
     if (!TOKEN) {
@@ -14,6 +15,7 @@ function NavBar() {
     }
   }, []);
 
+  //Handle user logout and hide log out button
   const handleLogout = () => {
     localStorage.removeItem('token');
     document.querySelector('.' + classes.logBtn).style.display = 'none';

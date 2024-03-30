@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+//Detects when user scrolls to the bottom of the page to load more posts, handled in Feed.jsx
 function ScrollDetector({ onScrollToBottom, isLoading }) {
   useEffect(() => {
     let timeoutId = null;

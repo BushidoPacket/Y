@@ -2,8 +2,10 @@ import classes from "./Login.module.css";
 
 import API from "./Addressables";
 
+//Handle user login on the page, set inside of Profile.jsx route
 function Login() {
 
+    //Login user with username and password
     const loginUser = async (username, password) => {
 
         const response = await fetch(`${API}/users/login`, {
@@ -14,7 +16,6 @@ function Login() {
         body: JSON.stringify({ username, password }),
         });
 
-        console.log(response);
         if (response.status !== 200) {
             const user = await response.json();
             alert(user.error);
@@ -29,6 +30,7 @@ function Login() {
         }
     };
 
+    //Handle login form submission
     const handleLoginSubmit = (event) => {
         event.preventDefault();
         const username = event.target.elements.username.value;

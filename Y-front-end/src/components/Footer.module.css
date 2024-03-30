@@ -1,4 +1,4 @@
-footer {
+.footer {
     position: fixed;
     bottom: 0;
     background-color: #000000;
@@ -13,7 +13,7 @@ footer {
     align-content: center;
 }
 
-footer > p {
+.footer > p {
     color: white;
     font-size: 0.8rem;
     margin: 0.5rem;

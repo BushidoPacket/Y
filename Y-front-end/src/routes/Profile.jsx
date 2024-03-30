@@ -4,7 +4,8 @@ import Register from "../components/Register";
 import Login from "../components/Login";
 
 
-
+//Profile page, contains login and register components while not logged in
+//Contains user profile information while logged in
 function Profile() {
   
 

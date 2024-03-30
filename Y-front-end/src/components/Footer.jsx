@@ -4,7 +4,7 @@ const Footer = () => {
 
     return (
         <>
-        <footer>
+        <footer className={classes.footer}>
             <p>The application was created as a credit project.</p>
         </footer>
         </>

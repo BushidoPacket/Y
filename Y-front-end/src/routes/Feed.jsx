@@ -13,6 +13,7 @@ function Feed() {
   const [tokenFilled, setTokenFilled] = useState(false);
   const [page, setPage] = useState(1);
 
+  //Check if token is filled and set the state
   useEffect(() => {
     if (
       TOKEN !== null &&
@@ -26,9 +27,9 @@ function Feed() {
     }
   }, []);
 
+  //Fetch posts from the API with pagination
   useEffect(() => {
     async function fetchPosts() {
-      console.log("fetching posts page: " + page);
       setLoading(true);
       const response = await fetch(`${API}/posts?page=${page}`);
       const data = await response.json();
@@ -38,9 +39,8 @@ function Feed() {
     fetchPosts();
   }, [page]);
 
+  //Handle scroll to bottom event -> handling pagination with ScrollDetector.jsx component
   const handleScrollToBottom = () => {
-    console.log("scrolling to bottom");
-
     setPage((prevPage) => prevPage + 1);
   };
 
@@ -107,9 +107,9 @@ function Feed() {
     ));
   };
 
+  //If some posts are loading and front-end is waiting for back-end response, it will show loading text and animation
   const loader = () => {
     if (loading) {
-      //window.scrollTo(0, document.body.scrollHeight);
       return (
         <>
           <AppTitle title="Y - Loading posts..." />
@@ -122,6 +122,7 @@ function Feed() {
     }
   };
 
+  //Post new post to the DB
   const postNewPost = async (text) => {
     if (text === "" || text === null || text === undefined || text.length < 2) {
       alert("Your post is too short, minimum length is 2 characters.");
@@ -147,12 +148,14 @@ function Feed() {
     }
   };
 
+  //Handle post submission from the form
   const handlePostSubmit = (event) => {
     event.preventDefault();
     const text = event.target.elements.text.value;
     postNewPost(text);
   };
 
+  //Structure of the form for writing a new post
   const writePost = () => {
     return (
       <>

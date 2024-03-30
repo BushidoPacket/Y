@@ -1,6 +1,6 @@
 
 
-
+//Search function to fetch posts from the API based on parameters
 function Search() {
   return (
     <>

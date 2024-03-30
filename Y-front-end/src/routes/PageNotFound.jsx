@@ -1,6 +1,7 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 
+//Default 404 page, handled by React Router in main.jsx
 function PageNotFound() {
   return (
     <>

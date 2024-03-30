@@ -2,8 +2,10 @@ import classes from "./Register.module.css";
 
 import API from "./Addressables";
 
+//Handle user registration on the page, set inside of Profile.jsx route
 function Register() {
-    
+  
+  //Handle registration form submission
   const handleRegisterSubmit = (event) => {
     event.preventDefault();
     const username = event.target.elements.username.value;
@@ -13,6 +15,7 @@ function Register() {
     registerUser(username, email, password, passwordCheck);
   };
 
+  //Register user with username, email and password, calls API
   const registerUser = async (username, email, password, passwordCheck) => {
     if (!checkInputs(username, email, password, passwordCheck)) {
       return;
@@ -26,13 +29,12 @@ function Register() {
       body: JSON.stringify({ username, email, password }),
     });
 
-    console.log(response);
     if (response.status !== 201) {
         const user = await response.json();
         alert(user.error);
-        //document.getElementById("contentInput").value = "";
     }
 
+    //Clean up the form after successful registration
     if (response.status === 201) {
         const user = await response.json();
         alert(user.message);
@@ -43,6 +45,7 @@ function Register() {
     }
   };
 
+  //Check if inputs are valid within set parameters
   const checkInputs = (username, email, password, passwordCheck) => {
     if (password != passwordCheck) {
       alert("Passwords do not match!");
