@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import DateFormat from "./DateFormat.jsx";
 
 import classes from "./Comments.module.css";
 
@@ -7,7 +8,7 @@ import API from "./Addressables.jsx";
 
 const TOKEN = localStorage.getItem("token");
 
-function Comments({ postID, dateHandler, tokenFilled }) {
+function Comments({ postID, tokenFilled }) {
 
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ function Comments({ postID, dateHandler, tokenFilled }) {
           <h4>
             {comment.author} |{" "}
             <span className={classes.timestamp}>
-              {dateHandler(comment.timestamp)}
+              <DateFormat timestamp={comment.timestamp} />
             </span>
           </h4>
           <p className={classes.text}>{comment.text}</p>
