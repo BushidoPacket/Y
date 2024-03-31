@@ -5,15 +5,48 @@
 }
   
 :root {
+
+    --outline: rgba(255, 255, 255, 0.459);
+    --background-post: rgba(0, 0, 0, 0.774);
+    --fade: fade-in 1.5s;
+
+
     min-height: 100vh;
     font-family: 'Sofia Pro', sans-serif;
-    background-image: radial-gradient(ellipse at top left, #2e0d0d, #090925);
+    background-image: url(background4.svg);
     background-attachment: fixed;    
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+
+    /* width */
+    ::-webkit-scrollbar {
+    width: 0.8rem;
+    border-radius: 1rem;
+    }
+  
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 1rem;
+    }
+  
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #287897;
+    border: 1px solid #ffffff;
+    border-radius: 1rem;
+    }
+  
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #000000;
+    border-radius: 1rem;
+    }
 }
 
 #root {
@@ -26,11 +59,22 @@
   
 body {
     margin: 0;
-    color: #e6ddf9;
+    color: #cdedfc;
 }
 
-@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) { 
-    :root { 
-        width: 98%; 
-    } 
+button:hover {
+    cursor: pointer;
+}
+
+
+/*### KEY FRAMES ###*/
+@keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 100;
+      transform: scale(1);
+    }
 }

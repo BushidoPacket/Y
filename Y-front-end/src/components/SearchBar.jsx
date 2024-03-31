@@ -20,6 +20,7 @@ export default function SearchBar({ setParams }) {
   return (
     <>
       <div className={classes.searchBarContainer}>
+        <div className={classes.searchInputs}>
         <input
           onChange={handleAuthorChange}
           type="text"
@@ -32,6 +33,8 @@ export default function SearchBar({ setParams }) {
           name="searchText"
           placeholder="Search by text..."
         />
+        </div>
+        
         <button onClick={handleButtonClick}>Search</button>
       </div>
     </>

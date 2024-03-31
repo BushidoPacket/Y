@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppTitle from "../components/AppTitle";
 import ScrollDetector from "../components/ScrollDetector.jsx";
 import Comments from "../components/Comments.jsx";
@@ -13,7 +13,7 @@ const TOKEN = localStorage.getItem("token");
 
 //Main component for the feed and search page, loading posts, comments and handling post and comment submission (in sub components)
 //writeSet = boolean, if true, it will show the form for writing a new post (made for the purposes of the feed page)
-export default function Posts({ writeSet }) {
+export default function Posts({ writeSet, params }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tokenFilled, setTokenFilled] = useState(false);
@@ -37,7 +37,7 @@ export default function Posts({ writeSet }) {
             <div className={classes.timestamp}>
               <DateFormat timestamp={post.timestamp} />
             </div>
-            <Comments postID={post._id} tokenFilled={tokenFilled}/>
+            <Comments postID={post._id} tokenFilled={tokenFilled} />
           </div>
         </div>
       </React.Fragment>
@@ -63,7 +63,7 @@ export default function Posts({ writeSet }) {
   const handlePostSubmit = (event) => {
     event.preventDefault();
     const text = event.target.elements.text.value;
-    PostNewPost({text, TOKEN, setPosts});
+    PostNewPost({ text, TOKEN, setPosts });
   };
 
   //Structure of the form for writing a new post
@@ -93,11 +93,17 @@ export default function Posts({ writeSet }) {
 
   return (
     <>
+      <TokenChecker setTokenFilled={setTokenFilled} TOKEN={TOKEN} />
+      <FetchPosts
+        setLoading={setLoading}
+        setPosts={setPosts}
+        page={page}
+        params={params}
+      />
 
-      <TokenChecker setTokenFilled={setTokenFilled} TOKEN={TOKEN}/>
-      <FetchPosts setLoading={setLoading} setPosts={setPosts} page={page}/>
-
-      {writeSet && <div className={classes.writePostContainer}>{writePost()}</div>}
+      {writeSet && (
+        <div className={classes.writePostContainer}>{writePost()}</div>
+      )}
 
       <div className={classes.container}>{postsLoadingHandler()}</div>
 

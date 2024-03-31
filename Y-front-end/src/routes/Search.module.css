@@ -1,8 +1,0 @@
-@import "./Feed.module.scss";
-
-.searchContainer {
-    top: 5rem;
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 3rem;
-}

@@ -1,7 +1,57 @@
+@import url('../index.css');
+
 .searchBarContainer {
     display: flex;
-    width: 80%;
+    flex-direction: row;
+    width: 51%;
     height: 20vh;
-    background-color: red;
-    margin-bottom: 2rem;
+    background-color: var(--background-post);
+    border: 1px solid var(--outline);
+    border-radius: 1rem;
+
+
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    animation: var(--fade);
+}
+
+.searchBarContainer > button {
+    width: fit-content;
+    height: fit-content;
+
+    align-self: center;
+    margin: 1rem;
+    padding: 0.6rem;
+
+    background-color: var(--background-post);
+    color: white;
+    border: 1px solid var(--outline);
+    border-radius: 0.5rem;
+}
+
+.searchBarContainer > button:hover {
+    color: black;
+    background-color: white;
+}
+
+.searchInputs {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    
+    justify-content: space-evenly;
+}
+
+.searchInputs > input {
+    width: 98%;
+    height: 3rem;
+    border: 1px solid var(--outline);
+    background-color: var(--background-post);
+    border-radius: 1rem;
+    padding: 0.5rem;
+    margin: 0.5rem;
+
+    color: white;
 }

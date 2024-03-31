@@ -1,4 +1,8 @@
+@import url('../index.css');
+
+
 /*### POST WRITING ###*/
+
 
 .writePostContainer {
     /*border: 2px red dashed;*/
@@ -7,11 +11,11 @@
     margin-top: 2vh;
     display: flex;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.685);
+    background-color: var(--background-post);
     margin-bottom: 1rem;
-    border: 5px rgba(0, 0, 0, 0.274) solid;
+    border: 5px var(--outline) solid;
     border-radius: 1rem;
-    animation: fade-in 1.5s;
+    animation: var(--fade);
 }
 
 .writePostContainer > h4 {
@@ -100,21 +104,27 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.336);
+    background-color: var(--background-post);
     margin-bottom: 1rem;
-    border: 5px rgba(0, 0, 0, 0.274) solid;
+    border: 1px var(--outline) solid;
     animation: fade-in 1.5s;
 }
 
-.post h3 {
+.post > h3 {
     margin-left: 2.5%;
+    text-decoration: double underline;
+    text-underline-offset: 0.4rem;
 }
 
-.post p {
+.post > p {
     /*border: 2px green dashed;*/
     width: 95%;
     height: fit-content;
     align-self: center;
+
+    font-weight: 200;
+    font-style: normal;
+    font-size: 1.2rem;
 }
 
 .footPostContainer {
@@ -122,8 +132,6 @@
     display: flex;
     flex-direction: column;
     margin-top: 1.5rem;
-    font-size: 0.75rem;
-    font-style: italic;
 }
 
 .buttonContainer {
@@ -132,7 +140,10 @@
 }
 
 .timestamp {
-    margin-left: 1.75rem;
+    margin-left: 1.25rem;
+    font-weight: 100;
+    font-size: 0.8rem;
+    font-style: italic;
 }
 
 .buttonContainer button {
@@ -199,18 +210,4 @@
     );
     
     z-index: -1;
-}
-
-
-
-/*### KEY FRAMES ###*/
-@keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 100;
-      transform: scale(1);
-    }
 }

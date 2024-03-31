@@ -3,6 +3,7 @@ import AppTitle from "../components/AppTitle";
 import Register from "../components/Register";
 import Login from "../components/Login";
 import { useEffect, useState } from "react";
+import DateFormat from "../components/DateFormat";
 
 import API from "../components/Addressables.jsx";
 
@@ -14,49 +15,6 @@ function Profile() {
   const [tokenFilled, setTokenFilled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-
-  const dateFormat = (timestamp) => {
-    const date = new Date(timestamp * 1);
-    const formattedDate = date.toLocaleString("cs-CZ", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    });
-
-    const formattedTime = date.toLocaleString("cs-CZ", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    const nbsp = "\u00A0";
-    const separator = nbsp + " | " + nbsp;
-
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    if (
-      formattedDate ===
-      today.toLocaleString("cs-CZ", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      })
-    ) {
-      return `${formattedTime}${separator}Today`;
-    } else if (
-      formattedDate ===
-      yesterday.toLocaleString("cs-CZ", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      })
-    ) {
-      return `${formattedTime}${separator}Yesterday`;
-    } else {
-      return `${formattedTime}${separator}${formattedDate}`;
-    }
-  };
 
   //Check if token is filled and set the state
   useEffect(() => {
@@ -91,34 +49,27 @@ function Profile() {
   //Profile information component + sets title of the document
   //Active when token is detected
   const profileInfo = () => {
-    console.log(user);
 
     if (user === null) {
-      return <h4>Loading...</h4>;
+      return <h4>User not found.</h4>;
     }
 
     return (
       <>
         <AppTitle title="Y - Profile" />
-        <h1>Profile</h1>
         <div className={classes.profileContainer}>
-          <label>Username</label>
-          <input type="text" name="username" value={user.username} disabled />
-          <label>Email</label>
-          <input type="email" name="email" value={user.email} disabled />
-          <label>Creation date</label>
-          <input
-            type="text"
-            name="creationDate"
-            value={dateFormat(user.creationDate)}
-            disabled
-          />
           <label>Profile picture</label>
           <img
             src={user.profilePicture}
             alt="Profile"
             className={classes.profilePicture}
           />
+          <label>Username</label>
+          <p className={classes.values}>{user.username}</p>
+          <label>Email</label>
+          <p className={classes.values}>{user.email}</p>
+          <label>Registration date</label>
+          <p className={classes.values}><DateFormat timestamp={user.creationDate}/></p>
         </div>
       </>
     );

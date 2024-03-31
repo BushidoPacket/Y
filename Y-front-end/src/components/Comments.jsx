@@ -24,7 +24,7 @@ function Comments({ postID, tokenFilled }) {
         `${API}/comments?page=${page}&postParentID=${postID}`
       );
       const data = await response.json();
-      setComments(data);
+      setComments(prevComments => [...prevComments, ...data]);
       setLoading(false);
       setLength(data.length);
     }
@@ -38,7 +38,7 @@ function Comments({ postID, tokenFilled }) {
         <div className={classes.comment}>
           <h4>
             {comment.author} |{" "}
-            <span className={classes.timestamp}>
+            <span className={classes.timestampComment}>
               <DateFormat timestamp={comment.timestamp} />
             </span>
           </h4>

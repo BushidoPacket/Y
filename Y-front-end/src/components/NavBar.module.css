@@ -57,4 +57,19 @@
     position: absolute;
     right: 2rem;
     top: 1rem;
+    width: fit-content;
+    height: fit-content;
+
+    font-size: 0.8rem;
+    padding: 0.5rem;
+
+    background-color: black;
+    border: white 1px solid;
+    border-radius: 0.5rem;
+    color: white;
+}
+
+.logBtn:hover {
+    background-color: white;
+    color: black;
 }

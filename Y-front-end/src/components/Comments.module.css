@@ -1,6 +1,11 @@
+@import url('../index.css');
+
 .comment {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 0.5rem;
+    border-left: 1px var(--outline) solid;
+    border-right: 1px var(--outline) solid;
+    border-bottom: 1px var(--outline) solid;
 }
 
 .newCommentContainer {
@@ -10,6 +15,8 @@
     height: 100%;
 
     margin-top: 1rem;
+
+    border: 0.5px var(--outline) solid;
 }
 
 .newCommentContainer button {
@@ -52,6 +59,10 @@
     outline: none;
 
     width: 90%;
+
+    overflow-y: auto;
+    height: 100px;
+
 }
 
 .loadedComments {
@@ -72,16 +83,22 @@
 .comment > h4 {
     font-style: normal;
     margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .comment > .text {
-    margin-bottom: 1rem;
-    margin-top: 0;
+    margin: 0;
+    padding: 0rem 1rem 1rem 1rem;
+
+    font-weight: 100;
+    font-size: 0.9rem;
 }
 
-.comment > h4 > .timestamp {
+.comment > h4 > .timestampComment {
     margin: 0;
     font-weight: 100;
+    font-size: 0.8rem;
 }
 
 .buttonLoader {
