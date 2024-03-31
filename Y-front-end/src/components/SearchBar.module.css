@@ -1,0 +1,7 @@
+.searchBarContainer {
+    display: flex;
+    width: 80%;
+    height: 20vh;
+    background-color: red;
+    margin-bottom: 2rem;
+}
