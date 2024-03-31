@@ -220,6 +220,32 @@ app.post("/posts/new", async (req, res) => {
   }
 });
 
+//Delete a post from DB and all associated comments
+app.delete("/posts/delete/:id", async (req, res) => {
+  const postId = req.params.id;
+  //console.log("=== Deleting post " + postId + ".");
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    // Delete the post
+    await Post.findByIdAndDelete(postId);
+
+    // Delete all comments associated with the post
+    await Comment.deleteMany({ postParentID: postId });
+
+    res.status(200).json({ message: "Post and associated comments deleted successfully." });
+    console.log("=== Post and associated comments deleted successfully.");
+  } catch (error) {
+    console.log("=== Error while deleting the post and associated comments.");
+    //console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting the post and associated comments." });
+  }
+});
+
 //Fetch all posts from DB with arguments
 app.get("/posts", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
