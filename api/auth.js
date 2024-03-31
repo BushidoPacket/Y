@@ -64,7 +64,38 @@ const verifyToken = (token) => {
     });
 }
 
+const validateRequest = async (token) => {
+
+    let validation = {status: 0, message: '', error: '', additionals: {}};
+
+    if (
+        !token ||
+        token === "" ||
+        token === "null" ||
+        token === "undefined" ||
+        token === undefined ||
+        token === null
+      ) {
+        validation.status = 401;
+        validation.error = "Unauthorized request. Token is missing.";
+      }
+
+    try {
+        const decoded = await verifyToken(token);
+        if (decoded) {
+            validation.status = 200;
+            validation.message = "Token verified.";
+            validation.additionals = decoded;
+        }
+    } catch (err) {
+        validation.status = 403;
+        validation.error = "Unauthorized request. Token is not valid.";
+    } 
+    
+    return validation;
+}
+
 
 //Export modules
 
-module.exports = { hashPassword, compare, createToken, verifyToken };
+module.exports = { hashPassword, compare, createToken, verifyToken, validateRequest };
