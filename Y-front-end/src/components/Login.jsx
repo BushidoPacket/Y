@@ -24,6 +24,7 @@ function Login() {
         if (response.status === 200) {
             const user = await response.json();
             localStorage.setItem("token", user.token);
+            localStorage.setItem("username", user.user);
             alert(user.message);
             window.location.reload();
             //redirect settings
