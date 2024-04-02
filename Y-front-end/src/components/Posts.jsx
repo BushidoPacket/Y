@@ -155,9 +155,9 @@ export default function Posts({ writeSet, params }) {
             }
             disabled={!tokenFilled}
           ></textarea>
-          <button type="submit" disabled={!tokenFilled}>
+          {tokenFilled && <button type="submit">
             Post
-          </button>
+          </button>}
         </form>
       </>
     );

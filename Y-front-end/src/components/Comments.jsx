@@ -87,22 +87,17 @@ function Comments({ postID, tokenFilled }) {
     <>
       <div className={classes.commentsContainer}>
         <div className={classes.newCommentContainer}>
-          <form onSubmit={handleCommentSubmit}>
+          {tokenFilled && <form onSubmit={handleCommentSubmit}>
             <textarea
               rows={3}
-              placeholder={
-                tokenFilled
-                  ? "Write a comment..."
-                  : "You need to be logged in to comment."
-              }
-              disabled={!tokenFilled}
+              placeholder="Write a comment..."
               name="text"
               id="commentInput"
             ></textarea>
             <button disabled={!tokenFilled} type="submit">
               <img src="icons/chat-bubble.png" />
             </button>
-          </form>
+          </form>}
         </div>
         <div className={classes.loadedComments}>
           {commentsLoadingHandler()}
