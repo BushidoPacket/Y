@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
 }
 
 .loginContainer > form {
@@ -12,4 +11,39 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+
+.loginContainer > form > label {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0.5rem;
+}
+
+.loginContainer > form > input {
+    font-size: 0.8rem;
+    border-radius: 0.4rem;
+}
+
+.loginContainer > form > input:focus {
+    border: 5px solid yellow;
+    outline:yellow;
+}
+
+.loginContainer > form > button {
+    width: fit-content;
+    height: fit-content;
+
+    align-self: center;
+    margin: 1.5rem;
+    padding: 0.6rem;
+
+    background-color: var(--background-post);
+    color: white;
+    border: 1px solid var(--outline);
+    border-radius: 0.5rem;
+}
+
+.loginContainer > form > button:hover {
+    color: black;
+    background-color: white;
 }

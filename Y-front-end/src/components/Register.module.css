@@ -13,3 +13,39 @@
     justify-content: center;
     width: 100%;
 }
+
+.registerContainer > form > label {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0.5rem;
+}
+
+.registerContainer > form > input {
+    font-size: 0.8rem;
+    border-radius: 0.4rem;
+}
+
+
+.registerContainer > form > input:focus {
+    border: 5px solid yellow;
+    outline:yellow;
+}
+
+.registerContainer > form > button {
+    width: fit-content;
+    height: fit-content;
+
+    align-self: center;
+    margin: 1.5rem;
+    padding: 0.6rem;
+
+    background-color: var(--background-post);
+    color: white;
+    border: 1px solid var(--outline);
+    border-radius: 0.5rem;
+}
+
+.registerContainer > form > button:hover {
+    color: black;
+    background-color: white;
+}
