@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AppTitle from "../components/AppTitle";
 import ScrollDetector from "../components/ScrollDetector.jsx";
 import Comments from "../components/Comments.jsx";
@@ -6,6 +6,8 @@ import TokenChecker from "../components/TokenChecker.jsx";
 import FetchPosts from "../components/FetchPosts.jsx";
 import DateFormat from "../components/DateFormat.jsx";
 import PostNewPost from "../components/PostNewPost.jsx";
+import CheckOwnership from "./CheckOwnership.jsx";
+import API from "../components/Addressables.jsx";
 
 import classes from "./Posts.module.css";
 
@@ -28,20 +30,90 @@ export default function Posts({ writeSet, params }) {
   const postsLoadingHandler = () => {
     return posts.map((post, index) => (
       <React.Fragment key={index}>
-        <AppTitle title="Y - Feed" />
         <div className={classes.post}>
           <img src={post.image} />
           <h3>{post.author}</h3>
-          <p>{post.text}</p>
+          {post.isEditing ? (
+            <textarea
+              name="editPost"
+              value={post.text}
+              onChange={(e) => handleEditChange(e, index)}
+            ></textarea>
+          ) : (
+            <p>{post.text}</p>
+          )}
           <div className={classes.footPostContainer}>
             <div className={classes.timestamp}>
               <DateFormat timestamp={post.timestamp} />
             </div>
+            {CheckOwnership({ user: post.author }) ? (
+              <div className={classes.buttonContainer}>
+                {/*EDIT BUTTON*/}
+                {post.isEditing ? (
+                  <button onClick={() => handleSaveClick(index)}>
+                    <img src="icons/write.png" />
+                  </button>
+                ) : (
+                  <button onClick={() => handleEditClick(index)}>
+                    <img src="icons/edit.png" />
+                  </button>
+                )}
+                {/*DELETE BUTTON*/}
+                <button onClick={() => handleDeleteClick(post._id)}>
+                  <img src="icons/bin.png" />
+                </button>
+              </div>
+            ) : null}
             <Comments postID={post._id} tokenFilled={tokenFilled} />
           </div>
         </div>
       </React.Fragment>
     ));
+  };
+
+  // Edit Functionality
+  const handleEditClick = (index) => {
+    const updatedPosts = [...posts];
+    updatedPosts[index].isEditing = true;
+    setPosts(updatedPosts);
+  };
+
+  const handleEditChange = (e, index) => {
+    const newPosts = [...posts];
+    newPosts[index].text = e.target.value;
+    setPosts(newPosts);
+  };
+
+  const handleSaveClick = (index) => {
+    const updatedPosts = [...posts];
+    updatedPosts[index].isEditing = false;
+    // Handle saving the edited content
+    // You might want to make an API call here to update the post on the server
+    setPosts(updatedPosts);
+  };
+
+  const handleDeleteClick = async (postId) => {
+
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      try {
+        const response = await fetch(`${API}/posts/delete/${postId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: TOKEN,
+          },
+        });
+  
+        if (response.status === 200) {
+          window.location.reload();
+        } else {
+          alert("An error occured while deleting the post.");
+        }
+      } catch (error) {
+        alert("An error occurred while deleting the post.");
+        console.error("An error occurred while deleting the post:", error);
+      }
+    }
+
   };
 
   //If some posts are loading and front-end is waiting for back-end response, it will show loading text and animation
