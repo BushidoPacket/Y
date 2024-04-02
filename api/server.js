@@ -19,7 +19,7 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
 
-const { hashPassword, compare, createToken, verifyToken } = require("./auth");
+const { hashPassword, compare, createToken, verifyToken, validateRequest } = require("./auth");
 
 const dateFormat = (timestamp) => {
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
@@ -97,7 +97,7 @@ app.put("/users/login", async (req, res) => {
         const token = createToken(user, "30d");
         res
           .status(200)
-          .json({ message: "User logged in successfully.", token });
+          .json({ message: "User logged in successfully.", token, user });
         console.log(
           "=== User " +
             user +
@@ -136,6 +136,7 @@ app.put("/users/login", async (req, res) => {
   }
 });
 
+//Fetch user info from DB
 app.put("/users/info", async (req, res) => {
   const token = req.body.token;
 
@@ -166,30 +167,63 @@ app.put("/users/info", async (req, res) => {
   }
 });
 
+/*
+app.put("/users/checkOwnership", async (req, res) => {
+  const token = req.headers["authorization"];
+  const postID = req.body.postID;
+  const type = req.body.type;
+
+  try {
+    const validation = await validateRequest(token);
+    if(validation.status !== 200) {
+      return res.status(validation.status).json({ error: validation.error })
+    };
+
+    const userFound = await User.findOne({ username: validation.additionals.user });
+    const { username } = userFound;
+    let searchValue;
+
+    switch (type) {
+      case "post":
+        searchValue = await Post.findById(postID);
+        break;
+      case "comment":
+        searchValue = await Comment.findById(postID);
+        break;
+      default:
+        return res.status(400).json({ error: "Invalid type." });
+    }
+
+    if (!searchValue) {
+      return res.status(404).json({ error: "Item not found." });
+    };
+
+    if (searchValue.author.toString() !== username) {
+      //console.log("1");
+      return res.status(403).json({ error: "You are not the author of this post." });
+    } else {
+      return res.status(200).json({ message: "Verified ownership of the item." });
+    
+    };
+
+  } catch (error) {
+    console.log("=== Error while checking ownership.");
+    res.status(401).json({ error: "There has been an error while checking the ownership." });
+  }
+});
+*/
+
 //Publish a new post into DB
 app.post("/posts/new", async (req, res) => {
   //Authorize user
   const token = req.headers["authorization"];
 
-  let author = "";
+  const validation = await validateRequest(token);
+  if(validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.error })
+  };
 
-  if (
-    !token ||
-    token === "" ||
-    token === "null" ||
-    token === "undefined" ||
-    token === undefined ||
-    token === null
-  ) {
-    return res.status(401).json({ error: "Unauthorized." });
-  }
-
-  try {
-    const decoded = await verifyToken(token);
-    author = decoded.user;
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token." });
-  }
+  const author = validation.additionals.user;
 
   //Create post
   try {
@@ -223,12 +257,25 @@ app.post("/posts/new", async (req, res) => {
 //Delete a post from DB and all associated comments
 app.delete("/posts/delete/:id", async (req, res) => {
   const postId = req.params.id;
-  //console.log("=== Deleting post " + postId + ".");
+  //Authorize user
+  const token = req.headers["authorization"];
+
+  const validation = await validateRequest(token);
+  if(validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.message });
+  };
+
+  const author = validation.additionals.user;
 
   try {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ error: "Post not found." });
+    }
+
+    // Check if the user is the author of the post
+    if (post.author.toString() !== author) {
+      return res.status(403).json({ error: "You are not authorized to delete this post." });
     }
 
     // Delete the post
@@ -243,6 +290,50 @@ app.delete("/posts/delete/:id", async (req, res) => {
     console.log("=== Error while deleting the post and associated comments.");
     //console.error(error);
     res.status(500).json({ error: "An error occurred while deleting the post and associated comments." });
+  }
+});
+
+
+//Edit an existing post in DB
+app.put("/posts/edit/:id", async (req, res) => {
+  const postId = req.params.id;
+  let newText = req.body.text;
+
+  // Append current date to newText
+  newText = `Edit ${dateFormat(Date.now())}: ${newText}`;
+
+  //Authorize user
+  const token = req.headers["authorization"];
+
+  const validation = await validateRequest(token);
+  if(validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.error })
+  };
+
+  try {
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    // Check if the user is the author of the post
+    //console.log(decodedToken);
+    if (post.author.toString() !== validation.additionals.user) {
+      return res.status(403).json({ error: "You can only edit your own posts." });
+    }
+
+    // Update the post
+    
+    post.text = newText;
+    await post.save();
+
+    res.status(200).json({ message: "Post updated successfully." });
+    console.log("=== Post " + post._id + " updated successfully.");
+  } catch (error) {
+    //console.error(error);
+    console.log("=== Error while updating the post.");
+    res.status(500).json({ error: "An error occurred while updating the post." });
   }
 });
 
@@ -354,5 +445,77 @@ app.get("/comments", async (req, res) => {
     });
   }
 });
+
+//Delete a comment from DB
+app.delete("/comments/delete/:id", async (req, res) => {
+  const commentId = req.params.id;
+  //Authorize user
+  const token = req.headers["authorization"];
+
+  const validation = await validateRequest(token);
+  if(validation.status !== 200) {
+    res.status(validation.status).json({ error: validation.error });
+    return;
+  };
+
+  const author = validation.additionals.user;
+
+  try {
+    const comment = await Comment.findOne({ _id: commentId, author: author });
+    if (!comment) {
+      res.status(404).json({ error: "Comment not found." });
+      return;
+    }
+
+    await Comment.deleteOne({ _id: commentId });
+    res.status(200).json({ message: "Comment deleted successfully." });
+  } catch (error) {
+    //console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting the comment." });
+  }
+});
+
+//Edit an existing comment in DB
+app.put("/comments/edit/:id", async (req, res) => {
+  const commentId = req.params.id;
+  let newText = req.body.text;
+
+  // Append current date to newText
+  newText = `Edit ${dateFormat(Date.now())}: ${newText}`;
+
+  //Authorize user
+  const token = req.headers["authorization"];
+
+  const validation = await validateRequest(token);
+  if(validation.status !== 200) {
+    res.status(validation.status).json({ error: validation.error });
+    return;
+  }
+
+  try {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      res.status(404).json({ error: "Comment not found" });
+      return;
+    }
+
+    if (comment.author !== validation.additionals.user) {
+      res.status(403).json({ error: "You are not the author of this comment" });
+      return;
+    }
+
+    comment.text = newText;
+    await comment.save();
+
+    res.status(200).json({ message: "Comment updated successfully" });
+  } catch (error) {
+    //console.error(error);
+    res.status(500).json({ message: "An error occurred while updating the comment" });
+  }
+});
+
+
+
+
 
 app.listen(3001, () => console.log("=== Server running on port 3001."));
