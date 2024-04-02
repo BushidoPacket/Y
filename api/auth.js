@@ -50,6 +50,7 @@ const createToken = (user, exp) => {
     return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: exp });
 }
 
+//Verify JWT token
 const verifyToken = (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -64,6 +65,7 @@ const verifyToken = (token) => {
     });
 }
 
+//Validate request => check if token is valid and also get user data from token along with status and message as object
 const validateRequest = async (token) => {
 
     let validation = {status: 0, message: '', error: '', additionals: {}};
