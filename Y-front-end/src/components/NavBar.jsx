@@ -18,6 +18,7 @@ function NavBar() {
   //Handle user logout and hide log out button
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
     document.querySelector('.' + classes.logBtn).style.display = 'none';
     window.location.reload();
   };
