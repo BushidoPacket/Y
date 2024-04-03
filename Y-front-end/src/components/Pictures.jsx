@@ -3,10 +3,11 @@ import API from "./Addressables.jsx";
 import classes from "./Pictures.module.css";
 
 //Component to swap profile pictures between the choices from server
-export default function Pictures({ TOKEN }) {
+export default function Pictures({ TOKEN, HPEC }) {
   const [pictures, setPictures] = useState([]);
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
 
+  //Fetch all available pictures from server
   const fetchPictures = async () => {
     try {
       const response = await fetch(`${API}/profile_pictures`);
@@ -21,6 +22,7 @@ export default function Pictures({ TOKEN }) {
     fetchPictures();
   }, []);
 
+  //Button handlers
   const nextPicture = () => {
     setCurrentPictureIndex((currentPictureIndex + 1) % pictures.length);
   };
@@ -31,6 +33,7 @@ export default function Pictures({ TOKEN }) {
     );
   };
 
+  //Request on API to save chosen picture
   const savePicture = async () => {
     const pfpRequest = pictures[currentPictureIndex];
 
@@ -68,6 +71,7 @@ export default function Pictures({ TOKEN }) {
             <div className={classes.pfpButtonContainer}>
               <button onClick={prevPicture}>◁</button>
               <button onClick={savePicture}>Save</button>
+              <button onClick={HPEC}>Exit</button>
               <button onClick={nextPicture}>▷</button>
             </div>
           </>
