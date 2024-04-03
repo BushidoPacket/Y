@@ -4,6 +4,7 @@ import Register from "../components/Register";
 import Login from "../components/Login";
 import { useEffect, useState } from "react";
 import DateFormat from "../components/DateFormat";
+import Pictures from "../components/Pictures";
 
 import API from "../components/Addressables.jsx";
 
@@ -13,8 +14,8 @@ const TOKEN = localStorage.getItem("token");
 //Contains user profile information while logged in
 function Profile() {
   const [tokenFilled, setTokenFilled] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [editingPfp, setEditingPfp] = useState(false);
 
   //Check if token is filled and set the state
   useEffect(() => {
@@ -59,11 +60,16 @@ function Profile() {
         <AppTitle title="Y - Profile" />
         <div className={classes.profileContainer}>
           <label>Profile picture</label>
-          <img
-            src={user.profilePicture}
-            alt="Profile"
-            className={classes.profilePicture}
-          />
+          {editingPfp ? <Pictures TOKEN={TOKEN} HPEC={handlePfpEditClick}/> :
+          <div className={classes.imageContainer}>
+            <img
+              src={`${API}/profile_pictures/${user.profilePicture}`}
+              alt="Profile"
+              className={classes.profilePicture}   
+            />
+            <button onClick={() => handlePfpEditClick()} className={classes.imageButton}>Edit picture</button>
+          </div>
+          }
           <label>Username</label>
           <p className={classes.values}>{user.username}</p>
           <label>Email</label>
@@ -74,6 +80,11 @@ function Profile() {
       </>
     );
   };
+
+  const handlePfpEditClick = () => {
+    setEditingPfp(!editingPfp);
+  }
+
 
   useEffect(() => {
     const fetchUserInfo = async () => {
