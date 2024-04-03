@@ -21,6 +21,7 @@ const User = require("./models/User");
 
 const { hashPassword, compare, createToken, verifyToken, validateRequest } = require("./auth");
 
+//Just for the purposes to see the date in a readable format in server console
 const dateFormat = (timestamp) => {
   return new Date(timestamp * 1).toLocaleString("cs-CZ", {
     month: "short",
@@ -31,6 +32,10 @@ const dateFormat = (timestamp) => {
     second: "2-digit",
   });
 };
+
+//#############
+//### USERS ###
+//#############
 
 //Register a new user into DB
 app.post("/users/new", async (req, res) => {
@@ -167,51 +172,10 @@ app.put("/users/info", async (req, res) => {
   }
 });
 
-/*
-app.put("/users/checkOwnership", async (req, res) => {
-  const token = req.headers["authorization"];
-  const postID = req.body.postID;
-  const type = req.body.type;
 
-  try {
-    const validation = await validateRequest(token);
-    if(validation.status !== 200) {
-      return res.status(validation.status).json({ error: validation.error })
-    };
-
-    const userFound = await User.findOne({ username: validation.additionals.user });
-    const { username } = userFound;
-    let searchValue;
-
-    switch (type) {
-      case "post":
-        searchValue = await Post.findById(postID);
-        break;
-      case "comment":
-        searchValue = await Comment.findById(postID);
-        break;
-      default:
-        return res.status(400).json({ error: "Invalid type." });
-    }
-
-    if (!searchValue) {
-      return res.status(404).json({ error: "Item not found." });
-    };
-
-    if (searchValue.author.toString() !== username) {
-      //console.log("1");
-      return res.status(403).json({ error: "You are not the author of this post." });
-    } else {
-      return res.status(200).json({ message: "Verified ownership of the item." });
-    
-    };
-
-  } catch (error) {
-    console.log("=== Error while checking ownership.");
-    res.status(401).json({ error: "There has been an error while checking the ownership." });
-  }
-});
-*/
+//#############
+//### POSTS ###
+//#############
 
 //Publish a new post into DB
 app.post("/posts/new", async (req, res) => {
@@ -369,6 +333,11 @@ app.get("/posts", async (req, res) => {
   }
 });
 
+
+//################
+//### COMMENTS ###
+//################
+
 //Publish a new comment into DB
 app.post("/comments/new", async (req, res) => {
   //Authorize user
@@ -467,6 +436,7 @@ app.delete("/comments/delete/:id", async (req, res) => {
 
     await Comment.deleteOne({ _id: commentId });
     res.status(200).json({ message: "Comment deleted successfully." });
+    console.log("=== Comment " + comment._id + " deleted successfully.");
   } catch (error) {
     //console.error(error);
     res.status(500).json({ error: "An error occurred while deleting the comment." });
@@ -504,6 +474,7 @@ app.put("/comments/edit/:id", async (req, res) => {
     await comment.save();
 
     res.status(200).json({ message: "Comment updated successfully" });
+    console.log("=== Comment " + comment._id + " updated successfully.");
   } catch (error) {
     //console.error(error);
     res.status(500).json({ message: "An error occurred while updating the comment" });
