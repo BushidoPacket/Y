@@ -20,7 +20,11 @@ const CommentSchema = new Schema({
     timestamp: {
         type: String,
         default: Date.now()
-    }
+    },
+    
+    editStamp: {
+        type: String,
+    },
 })
 
 const Comment = mongoose.model("Comment", CommentSchema)

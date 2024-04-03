@@ -299,9 +299,6 @@ app.put("/posts/edit/:id", async (req, res) => {
   const postId = req.params.id;
   let newText = req.body.text;
 
-  // Append current date to newText
-  newText = `Edit ${dateFormat(Date.now())}: ${newText}`;
-
   //Authorize user
   const token = req.headers["authorization"];
 
@@ -326,6 +323,7 @@ app.put("/posts/edit/:id", async (req, res) => {
     // Update the post
     
     post.text = newText;
+    post.editStamp = Date.now();
     await post.save();
 
     res.status(200).json({ message: "Post updated successfully." });
@@ -480,9 +478,6 @@ app.put("/comments/edit/:id", async (req, res) => {
   const commentId = req.params.id;
   let newText = req.body.text;
 
-  // Append current date to newText
-  newText = `Edit ${dateFormat(Date.now())}: ${newText}`;
-
   //Authorize user
   const token = req.headers["authorization"];
 
@@ -505,6 +500,7 @@ app.put("/comments/edit/:id", async (req, res) => {
     }
 
     comment.text = newText;
+    comment.editStamp = Date.now();
     await comment.save();
 
     res.status(200).json({ message: "Comment updated successfully" });

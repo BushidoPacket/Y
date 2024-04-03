@@ -15,7 +15,11 @@ const PostSchema = new Schema({
     timestamp: {
         type: String,
         default: Date.now()
-    }
+    },
+
+    editStamp: {
+        type: String,
+    },
 })
 
 const Post = mongoose.model("Post", PostSchema)
