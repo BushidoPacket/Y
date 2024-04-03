@@ -213,3 +213,13 @@
     
     z-index: -1;
 }
+
+.editPostTextarea {
+    width: 98%;
+    align-self: center;
+    background-color: var(--background-post);
+    color: white;
+    border-radius: 0.25rem;
+    max-width: 98%;
+    max-height: 20vh;
+}
