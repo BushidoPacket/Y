@@ -19,7 +19,15 @@ const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
 
-const { hashPassword, compare, createToken, verifyToken, validateRequest } = require("./auth");
+const {
+  hashPassword,
+  compare,
+  createToken,
+  verifyToken,
+  validateRequest,
+} = require("./auth");
+const fs = require("fs");
+const path = require("path");
 
 //Just for the purposes to see the date in a readable format in server console
 const dateFormat = (timestamp) => {
@@ -32,6 +40,30 @@ const dateFormat = (timestamp) => {
     second: "2-digit",
   });
 };
+
+app.use("/profile_pictures", express.static("profile_pictures"));
+
+app.get("/profile_pictures", (req, res) => {
+  const directoryPath = path.join(__dirname, "profile_pictures");
+
+  fs.readdir(directoryPath, (err, files) => {
+    if (err) {
+      return res.status(500).send("Unable to scan directory: " + err);
+    }
+
+    res.send(files);
+  });
+});
+
+//Custom edit for all users in DB, just for maintenance or massive edit purposes
+/*app.post("/customedit", async (req, res) => {
+  try {
+    const result = await User.updateMany({}, { $set: { profilePicture: "default.png" } });
+    console.log(result);
+  } catch (err) {
+    console.log(err);
+  }
+});*/
 
 //#############
 //### USERS ###
@@ -68,7 +100,7 @@ app.post("/users/new", async (req, res) => {
       password: passwordValue,
       salt: saltValue,
       creationDate: Date.now(),
-      profilePicture: "../profile_pictures/default.png",
+      profilePicture: "default.png",
     });
 
     await newUser.save();
@@ -172,6 +204,59 @@ app.put("/users/info", async (req, res) => {
   }
 });
 
+app.get("/users/pfp", async (req, res) => {
+  const username = req.query.username;
+
+  try {
+    const userFound = await User.findOne({ username: username });
+    if (!userFound) {
+      res.status(404).json({ error: "User not found." });
+      return;
+    }
+
+    res.status(200).json({ profilePicture: userFound.profilePicture });
+  } catch (error) {
+    console.log("=== Error while fetching the profile picture.");
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the profile picture." });
+  }
+});
+
+app.put("/users/edit", async (req, res) => {
+  const token = req.headers["authorization"];
+
+  const validation = await validateRequest(token);
+  if (validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.error });
+  }
+
+  const user = validation.additionals.user;
+  const pfpRequest = req.body.profilePicture;
+
+  try {
+    const storedUser = await User.findOne({ username: user });
+
+    if (!storedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    if (!pfpRequest) {
+      return res.status(400).json({ error: "No profile picture provided." });
+    }
+
+    storedUser.profilePicture = pfpRequest;
+    await storedUser.save();
+
+    res.status(200).json({ message: "Profile picture updated successfully." });
+
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the profile picture." });
+  }
+});
 
 //#############
 //### POSTS ###
@@ -183,9 +268,9 @@ app.post("/posts/new", async (req, res) => {
   const token = req.headers["authorization"];
 
   const validation = await validateRequest(token);
-  if(validation.status !== 200) {
-    return res.status(validation.status).json({ error: validation.error })
-  };
+  if (validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.error });
+  }
 
   const author = validation.additionals.user;
 
@@ -225,9 +310,9 @@ app.delete("/posts/delete/:id", async (req, res) => {
   const token = req.headers["authorization"];
 
   const validation = await validateRequest(token);
-  if(validation.status !== 200) {
+  if (validation.status !== 200) {
     return res.status(validation.status).json({ error: validation.message });
-  };
+  }
 
   const author = validation.additionals.user;
 
@@ -239,7 +324,9 @@ app.delete("/posts/delete/:id", async (req, res) => {
 
     // Check if the user is the author of the post
     if (post.author.toString() !== author) {
-      return res.status(403).json({ error: "You are not authorized to delete this post." });
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to delete this post." });
     }
 
     // Delete the post
@@ -248,15 +335,21 @@ app.delete("/posts/delete/:id", async (req, res) => {
     // Delete all comments associated with the post
     await Comment.deleteMany({ postParentID: postId });
 
-    res.status(200).json({ message: "Post and associated comments deleted successfully." });
+    res
+      .status(200)
+      .json({ message: "Post and associated comments deleted successfully." });
     console.log("=== Post and associated comments deleted successfully.");
   } catch (error) {
     console.log("=== Error while deleting the post and associated comments.");
     //console.error(error);
-    res.status(500).json({ error: "An error occurred while deleting the post and associated comments." });
+    res
+      .status(500)
+      .json({
+        error:
+          "An error occurred while deleting the post and associated comments.",
+      });
   }
 });
-
 
 //Edit an existing post in DB
 app.put("/posts/edit/:id", async (req, res) => {
@@ -267,12 +360,11 @@ app.put("/posts/edit/:id", async (req, res) => {
   const token = req.headers["authorization"];
 
   const validation = await validateRequest(token);
-  if(validation.status !== 200) {
-    return res.status(validation.status).json({ error: validation.error })
-  };
+  if (validation.status !== 200) {
+    return res.status(validation.status).json({ error: validation.error });
+  }
 
   try {
-
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ error: "Post not found." });
@@ -281,11 +373,13 @@ app.put("/posts/edit/:id", async (req, res) => {
     // Check if the user is the author of the post
     //console.log(decodedToken);
     if (post.author.toString() !== validation.additionals.user) {
-      return res.status(403).json({ error: "You can only edit your own posts." });
+      return res
+        .status(403)
+        .json({ error: "You can only edit your own posts." });
     }
 
     // Update the post
-    
+
     post.text = newText;
     post.editStamp = Date.now();
     await post.save();
@@ -295,7 +389,9 @@ app.put("/posts/edit/:id", async (req, res) => {
   } catch (error) {
     //console.error(error);
     console.log("=== Error while updating the post.");
-    res.status(500).json({ error: "An error occurred while updating the post." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the post." });
   }
 });
 
@@ -307,11 +403,25 @@ app.get("/posts", async (req, res) => {
   const order = parseInt(req.query.order) || -1;
 
   let params = {};
-  if (req.query.author && req.query.author !== "" && req.query.author !== "null" && req.query.author !== "undefined" && req.query.author !== undefined && req.query.author !== null) {
-    params.author = { $regex: new RegExp(req.query.author), $options: 'i' };
+  if (
+    req.query.author &&
+    req.query.author !== "" &&
+    req.query.author !== "null" &&
+    req.query.author !== "undefined" &&
+    req.query.author !== undefined &&
+    req.query.author !== null
+  ) {
+    params.author = { $regex: new RegExp(req.query.author), $options: "i" };
   }
-  if (req.query.text && req.query.text !== "" && req.query.text !== "null" && req.query.text !== "undefined" && req.query.text !== undefined && req.query.text !== null) {
-    params.text = { $regex: new RegExp(req.query.text), $options: 'i' };
+  if (
+    req.query.text &&
+    req.query.text !== "" &&
+    req.query.text !== "null" &&
+    req.query.text !== "undefined" &&
+    req.query.text !== undefined &&
+    req.query.text !== null
+  ) {
+    params.text = { $regex: new RegExp(req.query.text), $options: "i" };
   }
 
   try {
@@ -332,7 +442,6 @@ app.get("/posts", async (req, res) => {
     });
   }
 });
-
 
 //################
 //### COMMENTS ###
@@ -420,10 +529,10 @@ app.delete("/comments/delete/:id", async (req, res) => {
   const token = req.headers["authorization"];
 
   const validation = await validateRequest(token);
-  if(validation.status !== 200) {
+  if (validation.status !== 200) {
     res.status(validation.status).json({ error: validation.error });
     return;
-  };
+  }
 
   const author = validation.additionals.user;
 
@@ -439,7 +548,9 @@ app.delete("/comments/delete/:id", async (req, res) => {
     console.log("=== Comment " + comment._id + " deleted successfully.");
   } catch (error) {
     //console.error(error);
-    res.status(500).json({ error: "An error occurred while deleting the comment." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the comment." });
   }
 });
 
@@ -452,7 +563,7 @@ app.put("/comments/edit/:id", async (req, res) => {
   const token = req.headers["authorization"];
 
   const validation = await validateRequest(token);
-  if(validation.status !== 200) {
+  if (validation.status !== 200) {
     res.status(validation.status).json({ error: validation.error });
     return;
   }
@@ -477,12 +588,10 @@ app.put("/comments/edit/:id", async (req, res) => {
     console.log("=== Comment " + comment._id + " updated successfully.");
   } catch (error) {
     //console.error(error);
-    res.status(500).json({ message: "An error occurred while updating the comment" });
+    res
+      .status(500)
+      .json({ message: "An error occurred while updating the comment" });
   }
 });
-
-
-
-
 
 app.listen(3001, () => console.log("=== Server running on port 3001."));
