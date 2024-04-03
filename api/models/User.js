@@ -29,7 +29,7 @@ const UserSchema = new Schema({
 
     profilePicture: {
         type: String,
-        default: "../profile_pictures/default.png",
+        default: "default.png",
     },
 })
 
