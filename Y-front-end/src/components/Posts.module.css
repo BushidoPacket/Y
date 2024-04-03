@@ -110,10 +110,17 @@
     animation: fade-in 1.5s;
 }
 
-.post > h3 {
+.post h3 {
     margin-left: 2.5%;
     text-decoration: double underline;
     text-underline-offset: 0.4rem;
+}
+
+.post > .authorInfo {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    margin: 1rem;
 }
 
 .post > p {
