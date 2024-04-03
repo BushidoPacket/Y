@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import DateFormat from "./DateFormat.jsx";
+import CheckOwnership from "./CheckOwnership.jsx";
 
 import classes from "./Comments.module.css";
 
@@ -9,7 +10,6 @@ import API from "./Addressables.jsx";
 const TOKEN = localStorage.getItem("token");
 
 function Comments({ postID, tokenFilled }) {
-
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ function Comments({ postID, tokenFilled }) {
         `${API}/comments?page=${page}&postParentID=${postID}`
       );
       const data = await response.json();
-      setComments(prevComments => [...prevComments, ...data]);
+      setComments((prevComments) => [...prevComments, ...data]);
       setLoading(false);
       setLength(data.length);
     }
@@ -40,9 +40,46 @@ function Comments({ postID, tokenFilled }) {
             {comment.author} |{" "}
             <span className={classes.timestampComment}>
               <DateFormat timestamp={comment.timestamp} />
+              {comment.editStamp && (
+                <>
+                  &nbsp;&nbsp; Edited:{" "}
+                  <DateFormat timestamp={comment.editStamp} />
+                </>
+              )}
             </span>
           </h4>
-          <p className={classes.text}>{comment.text}</p>
+          {comment.isEditing ? (
+            <textarea
+              name="editComment"
+              value={comment.text}
+              onChange={(e) => handleEditChange(e, index)}
+              className={classes.editCommentTextarea}
+            ></textarea>
+          ) : (
+            <p className={classes.text}>{comment.text}</p>
+          )}
+          {CheckOwnership({ user: comment.author }) && (
+              <div className={classes.buttonContainer}>
+                {/*EDIT BUTTON*/}
+                {comment.isEditing ? (
+                  <><button onClick={() => handleSaveClick(index)}>
+                    <img src="icons/write.png" />
+                  </button>
+                  <button onClick={() => handleEditClick(index)}>
+                    <img src="icons/cross.png" />
+                  </button>
+                  </>
+                ) : (
+                  <button onClick={() => handleEditClick(index)}>
+                    <img src="icons/edit.png" />
+                  </button>
+                )}
+                {/*DELETE BUTTON*/}
+                <button onClick={() => handleDeleteClick(comment._id)}>
+                  <img src="icons/bin.png" />
+                </button>
+              </div>
+            )}
         </div>
       </React.Fragment>
     ));
@@ -53,6 +90,71 @@ function Comments({ postID, tokenFilled }) {
     event.preventDefault();
     const text = event.target.elements.text.value;
     postNewComment(text);
+  };
+
+  // Edit Functionality
+  const handleEditClick = (index) => {
+    const updatedComments = [...comments];
+    updatedComments[index].isEditing = !updatedComments[index].isEditing;
+    setComments(updatedComments);
+  };
+
+  const handleEditChange = (e, index) => {
+    const newComments = [...comments];
+    newComments[index].text = e.target.value;
+    setComments(newComments);
+  };
+
+  const handleSaveClick = async (index) => {
+    const updatedComments = [...comments];
+    updatedComments[index].isEditing = false;
+
+    try {
+      const response = await fetch(
+        `${API}/comments/edit/${updatedComments[index]._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: TOKEN,
+          },
+          body: JSON.stringify({ text: updatedComments[index].text }),
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Comment edited successfully.");
+      } else {
+        alert("An error occurred while editing the comment.");
+      }
+    } catch (error) {
+      alert("An error occurred while editing the comment.");
+      console.error("An error occurred while editing the comment:", error);
+    }
+
+    setComments(updatedComments);
+  };
+
+  const handleDeleteClick = async (commentID) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      try {
+        const response = await fetch(`${API}/comments/delete/${commentID}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: TOKEN,
+          },
+        });
+
+        if (response.status === 200) {
+          window.location.reload();
+        } else {
+          alert("An error occured while deleting the comment.");
+        }
+      } catch (error) {
+        alert("An error occurred while deleting the comment.");
+        console.error("An error occurred while deleting the comment:", error);
+      }
+    }
   };
 
   //Post new comment to DB
@@ -87,17 +189,19 @@ function Comments({ postID, tokenFilled }) {
     <>
       <div className={classes.commentsContainer}>
         <div className={classes.newCommentContainer}>
-          {tokenFilled && <form onSubmit={handleCommentSubmit}>
-            <textarea
-              rows={3}
-              placeholder="Write a comment..."
-              name="text"
-              id="commentInput"
-            ></textarea>
-            <button disabled={!tokenFilled} type="submit">
-              <img src="icons/chat-bubble.png" />
-            </button>
-          </form>}
+          {tokenFilled && (
+            <form onSubmit={handleCommentSubmit}>
+              <textarea
+                rows={3}
+                placeholder="Write a comment..."
+                name="text"
+                id="commentInput"
+              ></textarea>
+              <button disabled={!tokenFilled} type="submit">
+                <img src="icons/chat-bubble.png" />
+              </button>
+            </form>
+          )}
         </div>
         <div className={classes.loadedComments}>
           {commentsLoadingHandler()}

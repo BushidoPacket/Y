@@ -53,7 +53,7 @@ export default function Posts({ writeSet, params }) {
                 </>
               )}
             </div>
-            {CheckOwnership({ user: post.author }) ? (
+            {CheckOwnership({ user: post.author }) && (
               <div className={classes.buttonContainer}>
                 {/*EDIT BUTTON*/}
                 {post.isEditing ? (
@@ -74,7 +74,7 @@ export default function Posts({ writeSet, params }) {
                   <img src="icons/bin.png" />
                 </button>
               </div>
-            ) : null}
+            )}
             <Comments postID={post._id} tokenFilled={tokenFilled} />
           </div>
         </div>
