@@ -1,0 +1,40 @@
+.profilePicture {
+    --size: 10rem;
+    width: var(--size);
+    height: var(--size);
+    object-fit: cover;
+    clip-path: circle(50% at 50% 50%);
+}
+
+.pfpSwitcher {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.pfpButtonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 1rem;
+}
+
+.pfpButtonContainer > button {
+    background-color: var(--background-post);
+    border: 1px solid var(--outline);
+    border-radius: 0.4rem;
+    color: white;
+    width: 4rem;
+    padding: 0.5rem;
+
+    margin: 0.5rem;
+
+    transition: all 0.3s ease;
+}
+
+.pfpButtonContainer > button:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
