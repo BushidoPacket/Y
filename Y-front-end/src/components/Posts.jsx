@@ -38,6 +38,7 @@ export default function Posts({ writeSet, params }) {
               name="editPost"
               value={post.text}
               onChange={(e) => handleEditChange(e, index)}
+              className={classes.editPostTextarea}
             ></textarea>
           ) : (
             <p>{post.text}</p>
@@ -45,14 +46,24 @@ export default function Posts({ writeSet, params }) {
           <div className={classes.footPostContainer}>
             <div className={classes.timestamp}>
               <DateFormat timestamp={post.timestamp} />
+              {post.editStamp && (
+                <>
+                  <br />
+                  Edited: <DateFormat timestamp={post.editStamp} />
+                </>
+              )}
             </div>
             {CheckOwnership({ user: post.author }) ? (
               <div className={classes.buttonContainer}>
                 {/*EDIT BUTTON*/}
                 {post.isEditing ? (
-                  <button onClick={() => handleSaveClick(index)}>
+                  <><button onClick={() => handleSaveClick(index)}>
                     <img src="icons/write.png" />
                   </button>
+                  <button onClick={() => handleEditClick(index)}>
+                    <img src="icons/cross.png" />
+                  </button>
+                  </>
                 ) : (
                   <button onClick={() => handleEditClick(index)}>
                     <img src="icons/edit.png" />
@@ -74,7 +85,7 @@ export default function Posts({ writeSet, params }) {
   // Edit Functionality
   const handleEditClick = (index) => {
     const updatedPosts = [...posts];
-    updatedPosts[index].isEditing = true;
+    updatedPosts[index].isEditing = !updatedPosts[index].isEditing;
     setPosts(updatedPosts);
   };
 
@@ -84,16 +95,37 @@ export default function Posts({ writeSet, params }) {
     setPosts(newPosts);
   };
 
-  const handleSaveClick = (index) => {
+  const handleSaveClick = async (index) => {
     const updatedPosts = [...posts];
     updatedPosts[index].isEditing = false;
-    // Handle saving the edited content
-    // You might want to make an API call here to update the post on the server
+
+    try {
+      const response = await fetch(
+        `${API}/posts/edit/${updatedPosts[index]._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: TOKEN,
+          },
+          body: JSON.stringify({ text: updatedPosts[index].text }),
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Post edited successfully.");
+      } else {
+        alert("An error occurred while editing the post.");
+      }
+    } catch (error) {
+      alert("An error occurred while editing the post.");
+      console.error("An error occurred while editing the post:", error);
+    }
+
     setPosts(updatedPosts);
   };
 
   const handleDeleteClick = async (postId) => {
-
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
         const response = await fetch(`${API}/posts/delete/${postId}`, {
@@ -102,7 +134,7 @@ export default function Posts({ writeSet, params }) {
             Authorization: TOKEN,
           },
         });
-  
+
         if (response.status === 200) {
           window.location.reload();
         } else {
@@ -113,7 +145,6 @@ export default function Posts({ writeSet, params }) {
         console.error("An error occurred while deleting the post:", error);
       }
     }
-
   };
 
   //If some posts are loading and front-end is waiting for back-end response, it will show loading text and animation
@@ -155,9 +186,7 @@ export default function Posts({ writeSet, params }) {
             }
             disabled={!tokenFilled}
           ></textarea>
-          {tokenFilled && <button type="submit">
-            Post
-          </button>}
+          {tokenFilled && <button type="submit">Post</button>}
         </form>
       </>
     );
