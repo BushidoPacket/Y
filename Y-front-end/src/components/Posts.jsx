@@ -8,6 +8,7 @@ import DateFormat from "../components/DateFormat.jsx";
 import PostNewPost from "../components/PostNewPost.jsx";
 import CheckOwnership from "./CheckOwnership.jsx";
 import API from "../components/Addressables.jsx";
+import GetUserPfp from "./GetUserPfp.jsx";
 
 import classes from "./Posts.module.css";
 
@@ -31,8 +32,10 @@ export default function Posts({ writeSet, params }) {
     return posts.map((post, index) => (
       <React.Fragment key={index}>
         <div className={classes.post}>
-          <img src={post.image} />
-          <h3>{post.author}</h3>
+          <div className={classes.authorInfo}>
+            <GetUserPfp user={post.author} />
+            <h3>{post.author}</h3>
+          </div>
           {post.isEditing ? (
             <textarea
               name="editPost"
@@ -57,12 +60,13 @@ export default function Posts({ writeSet, params }) {
               <div className={classes.buttonContainer}>
                 {/*EDIT BUTTON*/}
                 {post.isEditing ? (
-                  <><button onClick={() => handleSaveClick(index)}>
-                    <img src="icons/write.png" />
-                  </button>
-                  <button onClick={() => handleEditClick(index)}>
-                    <img src="icons/cross.png" />
-                  </button>
+                  <>
+                    <button onClick={() => handleSaveClick(index)}>
+                      <img src="icons/write.png" />
+                    </button>
+                    <button onClick={() => handleEditClick(index)}>
+                      <img src="icons/cross.png" />
+                    </button>
                   </>
                 ) : (
                   <button onClick={() => handleEditClick(index)}>
