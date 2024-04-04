@@ -37,7 +37,6 @@ function Profile() {
     return (
       <>
         <AppTitle title="Y - Log in or register" />
-        <h1>Profile</h1>
         <div className={classes.logRegContainer}>
           <Login />
           <div className={classes.separator} />

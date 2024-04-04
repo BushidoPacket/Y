@@ -10,10 +10,12 @@
 
     width: 60%;
     height: fit-content;
+    margin-top: 2rem;
 
     background-color: black;
     border: 2px solid var(--outline);
     border-radius: 1rem;
+    animation: var(--fade);
 }
 
 .separator {
