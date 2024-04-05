@@ -41,8 +41,10 @@ const dateFormat = (timestamp) => {
   });
 };
 
+//Provide route to profile pictures
 app.use("/profile_pictures", express.static("profile_pictures"));
 
+//Fetch all profile pictures from the server
 app.get("/profile_pictures", (req, res) => {
   const directoryPath = path.join(__dirname, "profile_pictures");
 
@@ -204,6 +206,7 @@ app.put("/users/info", async (req, res) => {
   }
 });
 
+//Get user's profile picture (without authorization, because all pictures are public)
 app.get("/users/pfp", async (req, res) => {
   const username = req.query.username;
 
@@ -223,6 +226,7 @@ app.get("/users/pfp", async (req, res) => {
   }
 });
 
+//Edit user's profile picture
 app.put("/users/edit", async (req, res) => {
   const token = req.headers["authorization"];
 
