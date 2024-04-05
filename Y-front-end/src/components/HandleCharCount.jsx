@@ -1,4 +1,5 @@
-
+//Checks the character count and handles the counter
+//Inputs: event, setter for char count, maximum character count
 export default function HandleCharCount(event, setCharCount, maximum) {
 
         const text = event.target.value;
