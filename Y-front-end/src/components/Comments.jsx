@@ -42,7 +42,7 @@ function Comments({ postID, tokenFilled }) {
     }
 
     fetchComments();
-    console.log("Comments fetched.");
+    //console.log("Comments fetched.");
   }, [page, postID]);
 
   useEffect(() => {
