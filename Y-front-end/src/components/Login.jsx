@@ -43,6 +43,7 @@ function Login() {
 
   return (
     <>
+      {/* Login form */}
       <div className={classes.loginContainer}>
         <form onSubmit={handleLoginSubmit}>
           <h2>Login</h2>

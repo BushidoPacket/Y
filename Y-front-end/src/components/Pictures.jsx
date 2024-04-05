@@ -60,6 +60,7 @@ export default function Pictures({ TOKEN, HPEC }) {
 
   return (
     <>
+      {/* structure for pfp swapping on profile route */}
       <div className={classes.pfpSwitcher}>
         {pictures.length > 0 && (
           <>

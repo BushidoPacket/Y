@@ -92,19 +92,21 @@ function Comments({ postID, tokenFilled }) {
     postNewComment(text);
   };
 
-  // Edit Functionality
+  //Edit Functionality
   const handleEditClick = (index) => {
     const updatedComments = [...comments];
     updatedComments[index].isEditing = !updatedComments[index].isEditing;
     setComments(updatedComments);
   };
 
+  //Handle edit change
   const handleEditChange = (e, index) => {
     const newComments = [...comments];
     newComments[index].text = e.target.value;
     setComments(newComments);
   };
 
+  //Save edited comment
   const handleSaveClick = async (index) => {
     const updatedComments = [...comments];
     updatedComments[index].isEditing = false;
@@ -135,6 +137,7 @@ function Comments({ postID, tokenFilled }) {
     setComments(updatedComments);
   };
 
+  //Delete comment with API call
   const handleDeleteClick = async (commentID) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
@@ -187,6 +190,7 @@ function Comments({ postID, tokenFilled }) {
 
   return (
     <>
+      {/* structure of the comment output */}
       <div className={classes.commentsContainer}>
         <div className={classes.newCommentContainer}>
           {tokenFilled && (

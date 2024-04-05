@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import classes from "./SearchBar.module.css";
 
+//Search bar component for searching posts by author and text, used in Search route
+//If the both values are empty, the search will return all posts like in the Feed route
 export default function SearchBar({ setParams }) {
   const [author, setAuthor] = useState("");
   const [text, setText] = useState("");

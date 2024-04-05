@@ -5,6 +5,7 @@ import classes from "./NavBar.module.css";
 
 const TOKEN = localStorage.getItem('token');
 
+//Main navigation bar component, handled by React Router in RootLayout.jsx
 function NavBar() {
 
   //Hide log out button if user is not logged in

@@ -72,6 +72,7 @@ function Register() {
 
   return (
     <>
+      {/* Register form structure */}
       <div className={classes.registerContainer}>
         <form onSubmit={handleRegisterSubmit}>
           <h2>Register</h2>

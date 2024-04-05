@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from './Addressables.jsx';
 import classes from './GetUserPfp.module.css';
 
+//Fetches the profile picture of a user by username
 export default function GetUserPfp({ user }) {
   const [profilePicture, setProfilePicture] = useState(null);
 

@@ -7,6 +7,7 @@ function ScrollDetector({ onScrollToBottom, isLoading }) {
 
     const handleScroll = () => {
       const offset = 2000;
+      /* offset set based on testing */
 
       if (
         window.innerHeight + document.documentElement.scrollTop >=

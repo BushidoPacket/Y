@@ -59,6 +59,7 @@ function Profile() {
         <AppTitle title="Y - Profile" />
         <div className={classes.profileContainer}>
           <label>Profile picture</label>
+          {/* if clicked on pfp to edit, it will call pfp swapper, otherwise will show current pfp with button overlay for edit */}
           {editingPfp ? <Pictures TOKEN={TOKEN} HPEC={handlePfpEditClick}/> :
           <div className={classes.imageContainer}>
             <img
@@ -80,11 +81,12 @@ function Profile() {
     );
   };
 
+  //Switching editing state 
   const handlePfpEditClick = () => {
     setEditingPfp(!editingPfp);
   }
 
-
+  //Fetch user information on load
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -98,6 +100,7 @@ function Profile() {
     fetchUserInfo();
   }, []);
 
+  //API call for user information
   const loadUserInfo = async () => {
     const token = TOKEN;
 

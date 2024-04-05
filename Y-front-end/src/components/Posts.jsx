@@ -36,6 +36,7 @@ export default function Posts({ writeSet, params }) {
             <GetUserPfp user={post.author} />
             <h3>{post.author}</h3>
           </div>
+          {/* swapper of textarea and post text while editing */}
           {post.isEditing ? (
             <textarea
               name="editPost"
@@ -56,6 +57,7 @@ export default function Posts({ writeSet, params }) {
                 </>
               )}
             </div>
+            {/* checks if the user is author of the item and shows edit/delete buttons, secured on back-end */}
             {CheckOwnership({ user: post.author }) && (
               <div className={classes.buttonContainer}>
                 {/*EDIT BUTTON*/}
@@ -206,6 +208,7 @@ export default function Posts({ writeSet, params }) {
         params={params}
       />
 
+      {/* this is here because of Search route to turn off new post writing, turned on in Feed route */}
       {writeSet && (
         <div className={classes.writePostContainer}>{writePost()}</div>
       )}

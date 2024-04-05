@@ -1,5 +1,4 @@
-
-
+//Takes timestamp as argument and returns formatted date and time
 export default function DateFormat({timestamp}) {
 
         const date = new Date(timestamp * 1);
