@@ -25,3 +25,4 @@ dist-ssr
 api/requests.rest
 requests.rest
 private.env
+api/requests.rest
