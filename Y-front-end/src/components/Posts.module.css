@@ -71,6 +71,12 @@
     cursor: pointer;
 }
 
+@media screen and (max-width: 700px){
+
+    .writePostContainer{
+        width: 95vw;
+    }
+}
 
 
 
@@ -229,4 +235,12 @@
     border-radius: 0.25rem;
     max-width: 98%;
     max-height: 20vh;
+}
+
+@media screen and (max-width: 700px){
+
+    .container{
+        width: 95vw;
+    }
+    
 }

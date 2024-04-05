@@ -55,3 +55,11 @@
 
     color: white;
 }
+
+@media screen and (max-width: 700px) {
+
+    .searchBarContainer {
+        width: 95vw;
+    }
+    
+}

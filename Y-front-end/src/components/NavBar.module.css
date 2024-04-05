@@ -13,6 +13,7 @@
     display: flex;
     justify-content: center;
     align-content: center;
+    z-index: 1000;
 }
 
 .navcontainer > .navmain > img {
@@ -72,4 +73,26 @@
 .logBtn:hover {
     background-color: white;
     color: black;
+}
+
+@media screen and (max-width: 700px) {
+
+    .navcontainer {
+        width: 100%;
+    }
+
+    .navmain && .navcontainer {
+        margin: 0;
+    }
+
+    .navmain {
+        border-radius: 5rem;
+        padding: 0;
+    }
+
+    .logBtn {
+        right: 0;
+        top: 0;
+    }
+    
 }

@@ -51,7 +51,10 @@ function Profile() {
   const profileInfo = () => {
 
     if (user === null) {
-      return <h4>User not found.</h4>;
+      return <>
+      <img className={classes.loading} src="Spinner-1s-197px.svg"/>
+      <h4>Loading informations... If this takes too long, user has not been found.</h4>
+      </>
     }
 
     return (
