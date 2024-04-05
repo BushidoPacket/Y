@@ -282,6 +282,10 @@ app.post("/posts/new", async (req, res) => {
   try {
     const { text } = req.body;
 
+    if(text.length > 500){
+      return res.status(400).json({ error: "Your post is longer than 500 characters ("+ text.length +")!" });
+    }
+
     const newPost = new Post({
       author: author,
       text: text,
@@ -478,6 +482,10 @@ app.post("/comments/new", async (req, res) => {
 
   try {
     const { text, postParentID } = req.body;
+
+    if(text.length > 280){
+      return res.status(400).json({ error: "Your comment is longer than 280 characters ("+ text.length +")!" });
+    }
 
     const newComment = new Comment({
       author,
