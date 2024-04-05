@@ -22,6 +22,11 @@
     margin-left: 2.5%;
 }
 
+.charCount {
+    margin-left: 2.5%;
+    margin-bottom: 0.4rem;
+}
+
 .writePostContainer > form {
     display: flex;
     flex-direction: column;
@@ -138,6 +143,10 @@
     font-weight: 200;
     font-style: normal;
     font-size: 1.2rem;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 .footPostContainer {

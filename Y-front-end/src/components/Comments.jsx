@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DateFormat from "./DateFormat.jsx";
 import CheckOwnership from "./CheckOwnership.jsx";
 import GetUserPfp from "./GetUserPfp.jsx";
+import HandleCharCount from "./HandleCharCount.jsx";
 
 import classes from "./Comments.module.css";
 
@@ -15,6 +16,7 @@ function Comments({ postID, tokenFilled }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [length, setLength] = useState(0);
+  const [charCount, setCharCount] = useState(0);
 
   //Fetch comments from DB with arguments, from a specific post with pagination
   //Look for "page" and "postID" change in order to update comments and to align with new posts
@@ -234,17 +236,26 @@ function Comments({ postID, tokenFilled }) {
       <div className={classes.commentsContainer}>
         <div className={classes.newCommentContainer}>
           {tokenFilled && (
+            <div className={classes.inputContainer}>
+            <small 
+            className={classes.charCount}
+            style={{ display: charCount > 0 ? "block" : "none",
+            color: charCount == 280 ? "red" : ""}}
+            >Characters: {charCount}
+            </small>
             <form onSubmit={handleCommentSubmit}>
               <textarea
                 rows={3}
-                placeholder="Write a comment..."
+                placeholder="Write a comment... (max. 280 characters)"
                 name="text"
                 id="commentInput"
+                onChange={(event) => HandleCharCount(event, setCharCount, 280)}
               ></textarea>
               <button disabled={!tokenFilled} type="submit">
                 <img src="icons/chat-bubble.png" />
               </button>
             </form>
+            </div>
           )}
         </div>
         <div className={classes.loadedComments}>

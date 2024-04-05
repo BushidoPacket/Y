@@ -9,6 +9,8 @@ import PostNewPost from "../components/PostNewPost.jsx";
 import CheckOwnership from "./CheckOwnership.jsx";
 import API from "../components/Addressables.jsx";
 import GetUserPfp from "./GetUserPfp.jsx";
+import HandleCharCount from "./HandleCharCount.jsx";
+
 
 import classes from "./Posts.module.css";
 
@@ -21,6 +23,7 @@ export default function Posts({ writeSet, params }) {
   const [loading, setLoading] = useState(false);
   const [tokenFilled, setTokenFilled] = useState(false);
   const [page, setPage] = useState(1);
+  const [charCount, setCharCount] = useState(0);
 
   //Handle scroll to bottom event -> handling pagination with ScrollDetector.jsx component
   const handleScrollToBottom = () => {
@@ -173,13 +176,18 @@ export default function Posts({ writeSet, params }) {
     event.preventDefault();
     const text = event.target.elements.text.value;
     PostNewPost({ text, TOKEN, setPosts });
-  };
+  }; 
 
   //Structure of the form for writing a new post
   const writePost = () => {
     return (
       <>
         <h4>Write a new post...</h4>
+        <small 
+        className={classes.charCount}
+        style={{ display: charCount > 0 ? "block" : "none",
+        color: charCount == 500 ? "red" : ""}}
+        >Characters: {charCount}</small>
         <form onSubmit={handlePostSubmit}>
           <textarea
             id="contentInput"
@@ -187,10 +195,11 @@ export default function Posts({ writeSet, params }) {
             rows={3}
             placeholder={
               tokenFilled
-                ? "What's on your mind?"
+                ? "What's on your mind? (max. 500 characters)"
                 : "You need to be logged in to post.\n\nGo to the profile page to log in."
             }
             disabled={!tokenFilled}
+            onChange={(event) => HandleCharCount(event, setCharCount, 500)}
           ></textarea>
           {tokenFilled && <button type="submit">Post</button>}
         </form>
