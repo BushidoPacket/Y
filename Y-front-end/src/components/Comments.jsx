@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import DateFormat from "./DateFormat.jsx";
 import CheckOwnership from "./CheckOwnership.jsx";
+import GetUserPfp from "./GetUserPfp.jsx";
 
 import classes from "./Comments.module.css";
 
@@ -72,7 +73,9 @@ function Comments({ postID, tokenFilled }) {
     return comments.map((comment, index) => (
       <React.Fragment key={index}>
         <div className={classes.comment}>
-          <h4>
+          <div className={classes.authorInfo}>
+            <GetUserPfp user={comment.author} size={"comment"}/>
+            <h4>
             {comment.author} |{" "}
             <span className={classes.timestampComment}>
               <DateFormat timestamp={comment.timestamp} />
@@ -84,6 +87,7 @@ function Comments({ postID, tokenFilled }) {
               )}
             </span>
           </h4>
+          </div>
           {comment.isEditing ? (
             <textarea
               name="editComment"

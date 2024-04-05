@@ -8,3 +8,13 @@
     margin-top: 0.5rem;
     border: 0.15rem solid white;
 }
+
+.commentPicture{
+    --size: 2.5rem;
+    width: var(--size);
+    height: var(--size);
+    object-fit: cover;
+    clip-path: circle(50% at 50% 50%);
+    border-radius: 50%;
+    margin-top: 0.2rem;
+}

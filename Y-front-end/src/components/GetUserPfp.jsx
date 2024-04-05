@@ -3,7 +3,7 @@ import API from './Addressables.jsx';
 import classes from './GetUserPfp.module.css';
 
 //Fetches the profile picture of a user by username
-export default function GetUserPfp({ user }) {
+export default function GetUserPfp({ user, size }) {
   const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
@@ -26,5 +26,5 @@ export default function GetUserPfp({ user }) {
     fetchProfilePicture();
   }, [user]);
 
-  return profilePicture ? <img className={classes.profilePicture} src={`${API}/profile_pictures/${profilePicture}`} /> : null;
+  return profilePicture ? <img className={size === "comment" ? classes.commentPicture : classes.profilePicture} src={`${API}/profile_pictures/${profilePicture}`} /> : null;
 }
