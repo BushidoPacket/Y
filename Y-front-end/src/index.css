@@ -14,6 +14,8 @@
     min-height: 100vh;
     font-family: 'Sofia Pro', sans-serif;
     background-image: url(background2.svg);
+    background-size: cover;
+    background-position: center center;
     background-attachment: fixed;    
     font-synthesis: none;
     text-rendering: optimizeLegibility;
