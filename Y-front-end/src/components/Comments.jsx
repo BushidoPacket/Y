@@ -20,6 +20,41 @@ function Comments({ postID, tokenFilled }) {
   useEffect(() => {
     async function fetchComments() {
       setLoading(true);
+      let data;
+      if (postID) {
+        const response = await fetch(
+          `${API}/comments?page=${page}&postParentID=${postID}`
+        );
+        data = await response.json();
+      } else {
+        data = [];
+      }
+
+      if (page > 1) {
+        setComments((prevComments) => [...prevComments, ...data]);
+      } else {
+        setComments(data);
+      }
+
+      setLoading(false);
+      setLength(data.length);
+    }
+
+    fetchComments();
+    console.log("Comments fetched.");
+  }, [page, postID]);
+
+  useEffect(() => {
+    if (!postID) {
+      //setComments(existingComments => [...existingComments, ...postComments[postID]]);
+      setComments(existingComments => [...existingComments, null]);
+    }
+  }, [postID]);
+
+  //Old useEffect for fetching comments
+  /*useEffect(() => {
+    async function fetchComments() {
+      setLoading(true);
       const response = await fetch(
         `${API}/comments?page=${page}&postParentID=${postID}`
       );
@@ -29,7 +64,8 @@ function Comments({ postID, tokenFilled }) {
       setLength(data.length);
     }
     fetchComments();
-  }, [page, postID]);
+    console.log("Comments fetched.");
+  }, [page, postID]);*/
 
   //Structure for comments to be displayed on .map
   const commentsLoadingHandler = () => {
