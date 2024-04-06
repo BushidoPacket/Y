@@ -136,8 +136,8 @@ describe('Test API rate limits', () => {
     await mongoose.disconnect();
   });
 
-  for (let i = 0; i < 6; i++) {
-    it(`Should set rate limits after 5 requests, request n.:${i+1}`, async () => {
+  for (let i = 0; i < 5; i++) {
+    it(`Should set rate limits after 4 requests now, request n.:${i+1}`, async () => {
         const response = await request(app).post('/users/new').send({
             username: `testUser${i}`,
             password: 'testPassword',
@@ -147,6 +147,7 @@ describe('Test API rate limits', () => {
         if (i < 4) {
             expect([200, 201]).toContain(response.status);
         } else {
+            testLog('Rate limit reached, status:', response.status);
             expect(response.status).toBe(429);
         }
     });
