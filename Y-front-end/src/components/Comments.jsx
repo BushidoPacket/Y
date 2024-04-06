@@ -28,6 +28,13 @@ function Comments({ postID, tokenFilled }) {
         const response = await fetch(
           `${API}/comments?page=${page}&postParentID=${postID}`
         );
+
+        if (response.status !== 200){
+          const error = await response.json();
+          alert(error.error);
+          return null;
+        }
+
         data = await response.json();
       } else {
         data = [];

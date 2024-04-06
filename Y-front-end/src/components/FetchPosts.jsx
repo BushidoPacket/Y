@@ -20,6 +20,14 @@ export default function FetchPosts({ setLoading, setPosts, page, params = {} }) 
 
           setLoading(true);
           const response = await fetch(`${API}/posts?page=${page}&author=${query.author}&text=${query.text}`);
+
+          if(response.status !== 200) {
+            const error = await response.json();
+            alert(error.error);
+            setLoading(false);
+            return;
+          }
+
           const data = await response.json();
           setPosts((prevPosts) => [...prevPosts, ...data]);
           setLoading(false);
