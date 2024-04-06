@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node __tests__/unitTests.js",
+    "test": "node __tests__/unit.test.js",
     "start": "nodemon server.js"
   },
   "author": "",
