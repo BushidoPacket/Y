@@ -13,7 +13,9 @@ mongoose
     /*useNewUrlParser: true,
     useUnifiedTopology: true,*/
   })
-  .then(() => console.log("=== Connected to DB."))
+  .then(() => { if (process.env.NODE_ENV !== 'test') {
+    console.log("=== Connected to DB.");
+  }})
   .catch(console.error);
 
 const Post = require("./models/Post");
@@ -88,8 +90,12 @@ app.get("/profile_pictures", (req, res) => {
       return res.status(500).send("Unable to scan directory: " + err);
     }
 
-    res.send(files);
+    res.status(200).send(files);
   });
+});
+
+app.get('/ping', (req, res) => {
+  res.status(200).send('Server is running.');
 });
 
 //Custom edit for all users in DB, just for maintenance or massive edit purposes
@@ -641,4 +647,11 @@ app.put("/comments/edit/:id", async (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log("=== Server running on port 3001."));
+if(process.env.NODE_ENV !== 'test'){
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT || 3001, () => {
+      console.log(`=== Server running on port ${PORT}.`);
+  });
+}
+
+module.exports = app; // Export the app for testing
