@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
@@ -40,6 +41,40 @@ const dateFormat = (timestamp) => {
     second: "2-digit",
   });
 };
+
+//#################################################
+//### RATE LIMITS AND PROFILE PICTURES SETTINGS ###
+//#################################################
+
+//Template for creating rate limiters
+function createRateLimiter(minutes, maxRequests, message=""){
+  return rateLimit({
+    windowMs: minutes * 60 * 1000, // minutes * seconds * milliseconds 
+    max: maxRequests,
+    message: 'Too many requests from this IP, please try again later...',
+    handler: (req, res) => {
+      console.log(`Rate limit exceeded for IP: ${req.ip}`);
+      res.status(429).json({ error: 'Too many requests from this IP, please try again later. ' + message });
+    }
+  });
+}
+
+//Set specific rate limiters with custom limits and messages
+const limiterDefault = createRateLimiter(1, 300); //default limiter
+const limiterLogin = createRateLimiter(1, 10); //limiter for login requests
+const limiterRegister = createRateLimiter(60, 5, "You are trying to register too many accounts in a short period of time."); //limiter for register requests
+const limiterNewPost = createRateLimiter(1, 5, "You can create only 5 posts per minute."); //limiter for new posts
+const limiterNewComment = createRateLimiter(1, 10, "You can create only 10 comments per minute."); //limiter for new comments
+
+//Rate limiters for specific routes
+app.use("/users/login", limiterLogin);
+app.use("/users/new", limiterRegister);
+app.use("/posts/new", limiterNewPost);
+app.use("/comments/new", limiterNewComment);
+
+//Default rate limiter for all not specified routes
+app.use(limiterDefault);
+
 
 //Provide route to profile pictures
 app.use("/profile_pictures", express.static("profile_pictures"));
