@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../server.js');
 const mongoose = require('mongoose');
+const auth = require('../auth.js');
 
 //Declaration of different console logs, to separate server logs from test logs
 const originalLog = console.log;
@@ -23,7 +24,7 @@ const user = 'testuser';
 const password = 'testpassword';
 const email = 'test@email.cz';
 
-
+//Set #1 - Test API Endpoints
 describe('Test API Endpoints', () => {
   let server;
 
@@ -38,6 +39,7 @@ describe('Test API Endpoints', () => {
     await User.deleteOne({ username: user });
     testLog('User deleted after test.');
 
+    //await mongoose.disconnect(); //Needs to be commented if testing 2nd set
   });
 
   //Test #1 - ping server
@@ -118,6 +120,8 @@ describe('Test API Endpoints', () => {
   
 });
 
+//Set #2 - Test API rate limits
+//Comment out the last line of afterAll function in Set #1 to run this set properly
 describe('Test API rate limits', () => {
 
   let server;
@@ -181,6 +185,70 @@ describe('Test API rate limits', () => {
   it('Should not allow more requests after default rate limit is reached', async () => {
     const response = await request(app).get('/ping');
     expect(response.status).toBe(429);
+  });
+
+
+});
+
+//Set #3 - Test auth.js functions
+describe('Test auth.js functions', () => {
+
+  /*afterAll(async () => {
+    await mongoose.disconnect(); //For some reason needs to be here so jest doesn't throw open handles error, if you run just this test
+  });*/
+
+  //Test #1 - hashPassword function
+  it('Should hash password', () => {
+    const hashedPassword = auth.hashPassword(password);
+    expect(hashedPassword.passwordValue).not.toBe(password);
+    expect(hashedPassword.passwordValue).not.toContain(password);
+    expect(hashedPassword.passwordValue.length).toBe(64);
+  });
+
+  //Test #2.1 - compare function
+  it('Should flag true for valid hashed password', () => {
+    const hashedPassword = auth.hashPassword(password);
+    expect(auth.compare(password, hashedPassword.saltValue, hashedPassword.passwordValue)).toBe(true);
+  });
+
+  //Test #2.2 - compare function with wrong salt
+  it('Should flag false for invalid hashed password', () => {
+    const hashedPassword = auth.hashPassword(password);
+    expect(auth.compare(password, 'wrongSalt', hashedPassword.passwordValue)).toBe(false);
+  });
+
+  //Test #2.3 - compare function with wrong password
+  it('Should flag false for invalid hashed password', () => {
+    const hashedPassword = auth.hashPassword(password);
+    expect(auth.compare('wrongPassword', hashedPassword.saltValue, hashedPassword.passwordValue)).toBe(false);
+  });
+
+  //Test #3 - createToken function
+  it('Should create token', () => {
+    token = auth.createToken(user, '1h');
+    expect(token).not.toBe('');
+    expect(token).not.toContain(user);
+    expect(token.length).toBeGreaterThan(100);
+    expect(token.split('.').length).toBeGreaterThan(0);
+  });
+
+  //Test #4.1 - verifyToken function
+  it('Should verify token', async () => {
+    const decoded = await auth.verifyToken(token);
+    expect(decoded.user).toBe(user);
+  });
+
+  //Test #4.2 - verifyToken function with wrong token
+  it('Should not verify wrong token', async () => {
+    await expect(auth.verifyToken(token + "0")).rejects.toThrow();
+  });
+
+  //Test #5 - validateRequest function
+  it('Should validate request', async () => {
+    const response = await auth.validateRequest(token);
+    expect(response.additionals.user).toBe(user);
+    expect(response.status).toBe(200);
+    expect(response.message).toBe('Token verified.');
   });
 
 
