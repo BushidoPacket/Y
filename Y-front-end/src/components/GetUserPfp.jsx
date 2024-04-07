@@ -9,7 +9,8 @@ export default function GetUserPfp({ user, size }) {
   useEffect(() => {
     const fetchProfilePicture = async () => {
       try {
-        const response = await fetch(`${API}/users/pfp?username=${user}`);
+        const encodedUsername = encodeURIComponent(user);
+        const response = await fetch(`${API}/users/pfp?username=${encodedUsername}`);
 
         if (response.status !== 200) {
           console.error('Error fetching user pfp');
