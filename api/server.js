@@ -7,6 +7,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.set('trust proxy', 1);
 
 mongoose
   .connect("mongodb://localhost:27017/y-social", {
@@ -249,7 +250,7 @@ app.put("/users/info", async (req, res) => {
 
 //Get user's profile picture (without authorization, because all pictures are public)
 app.get("/users/pfp", async (req, res) => {
-  const username = req.query.username;
+  const username = decodeURIComponent(req.query.username);
 
   try {
     const userFound = await User.findOne({ username: username });
